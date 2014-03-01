@@ -1,0 +1,11 @@
+
+importFrom(graphics, plot)
+importFrom(methods, show)
+import(copula)
+export(CoImp, MAR, MCAR, PerfMeasure)
+exportClasses(CoImp, MAR, MCAR, PerfMeasure)
+exportMethods(show, plot)
+
+
+
+

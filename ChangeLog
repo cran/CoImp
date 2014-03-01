@@ -1,0 +1,29 @@
+﻿0.1-1
+    - added a check to fcond.mod related to a bug in dcopula (package copula). To be removed.
+    - fixed import warning on import(graphics).
+
+0.1-2
+    - packaged under R 2.15.0.
+    - deleted methods plot and show: problems should be fixed.
+
+0.2-1
+    - added the cubature package in the Description file.
+    - changed the function fcond.mod in CoImp_Esterne.R: now it uses the adaptIntegrate function of the cubature package.
+    - example in CoImp.Rd: deleted three TRUE values in the call of the CoImp function (TRUE is default).
+
+0.2-2
+    - removed the dependence on cubature package.
+    - changed the function fcond.mod in CoImp_Esterne.R (the adaptIntegrate function of the cubature package is not used anymore
+	and the check due to a bug in dcopula function have been deleted).
+    - hitormiss function does not use anymore the vectorized version of the fcond function.
+    - modified the computation of the median values of the data.
+    - reintroduced methods plot and show.
+    - introduced a function (MCAR) that generates missing completely at random.
+    - introduced a function (MAR) that generates missing at random through a logistic multinomial regression model.
+    - introduced a function (PerfMeasure) that computes a set of performance measures for a given imputed data set.
+    - deleted the function for multiple imputation (CoImpEval).
+
+0.2-3
+    - Cleaned and improved the documentation;
+    - Moved almost all the dependencies to the Imports section;
+    - Removed the dependence on tseriesEntropy package which is not on the CRAN;

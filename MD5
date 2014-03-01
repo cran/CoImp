@@ -1,0 +1,16 @@
+70c0d5fa96d16fdc5f30b66c1d5ab0f2 *ChangeLog
+2c64bfb9e24bd2f0c563eb9f9b69fc67 *DESCRIPTION
+62d369b2435084f0feec8bf8b6d1c82f *NAMESPACE
+82688692f80cc4b98800b563ea0f0598 *R/CoImp.R
+d12bdb0aad8ea5fa9e79f10fb9b941df *R/CoImp_Esterne.R
+4679b6005ad1b27b2bdd8c841a69b4ea *R/MAR.R
+46a5d9d92d9f73ca063c532670dab563 *R/MCAR.R
+7a35205c023539031ef40e45f53b2698 *R/PerfMeasure.R
+40bf80b972144e113f46b36b233b6679 *man/CoImp-class.Rd
+67bfa16601344f22cb85f82fb4094156 *man/CoImp.Rd
+c716b80b02cf82e6ffdad24c5404aee7 *man/MAR-class.Rd
+06baccc186c0783e6ef1f5ecc3d201cf *man/MAR.Rd
+69fc02b9ef8d376357a0d87d1770e226 *man/MCAR-class.Rd
+66f4d38de88e619726be9f7b2ebd4641 *man/MCAR.Rd
+3ca8dc937cc55037b39476d51ac02058 *man/PerfMeasure-class.Rd
+7b2d580d45a65e320eb90bb81bed631a *man/PerfMeasure.Rd
