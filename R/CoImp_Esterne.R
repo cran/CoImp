@@ -27,11 +27,11 @@
 
 bar.plot <- function(tab, legend.plot = FALSE, args.legend = NULL, ...){ #  MODIFIED VERSION OF THE barplot FUNCTION
         rownames(tab) <- c("Data","Missing")
-        colnames(tab) <- paste("X",c(1:ncol(tab)),sep="")
+        #colnames(tab) <- colnames(tab) #paste("X",c(1:ncol(tab)),sep="")
         marg  <- c(.55,.4,.6,.2);
         par(mai=marg)
         if(legend.plot==TRUE) legend.plot <- rownames(tab)
-        return(barplot(tab, beside = TRUE, col = c("grey","red1"), legend = legend.plot, args.legend = args.legend, ylim = c(0, 100), main="Bar Plot", font.main = 3))
+        return(barplot(tab, beside = TRUE, col = c("grey","red1"), legend = legend.plot, args.legend = args.legend, ylim = c(0, 100), main="Bar Plot", font.main = 3, ...))
 }
 
 ###################################################################################
@@ -102,7 +102,7 @@ hitormiss <- function(FUN,p=1,h,a,b,...){   #  HIT OR MISS MONTE CARLO METHOD (M
         uni <- runif(p+1)
         r1  <- a + uni[1:p]*(b-a)
     }
-    while(r2 > FUN(r1) & (is.nan(FUN(r1)))){
+    while(r2 > FUN(r1) | (is.nan(FUN(r1)))){
         uni <- runif(p+1)
         r1  <- a + uni[1:p]*(b-a)
         r2  <- uni[(p+1)]*h

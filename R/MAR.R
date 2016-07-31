@@ -39,6 +39,8 @@ setClass("MAR",
 
 MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 # introduce MAR in a dataset
+                if(!is.matrix(db.complete))
+                    stop("the data matrix in entry should be a matrix")
                 if(perc.miss<=0)
                     stop("the missing percentage should be positive")
                 if(sum(is.na(db.complete))!=0)
@@ -58,6 +60,7 @@ MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 comb2    <- cbind(comb,P:1)
 
                 # random assignment of missing patter to the obs (row data matrix)
+                set.seed(setseed)
                 res  <- cbind(db.complete,comb2[sample(1:P,size=nrow(db.complete),replace=T),])
                 dati <- as.data.frame(cbind(res[,(n.marg*2+1)],db.complete)) # Y multinomial: number of categories = number of possible (multiv.) missing patters
                 dati[,1] <- as.factor(dati[,1])

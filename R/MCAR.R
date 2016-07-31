@@ -37,9 +37,10 @@ setClass("MCAR",
 
 ## ***************************************************************************************************
 
-
 MCAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 # introduce MCAR in a dataset
+                if(!is.matrix(db.complete))
+                    stop("the data matrix in entry should be a matrix")
                 if(perc.miss<=0)
                     stop("the missing percentage should be positive")
                 if(sum(is.na(db.complete))!=0)
@@ -47,6 +48,7 @@ MCAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 #
                 n.marg <- ncol(db.complete)
                 n      <- nrow(db.complete)
+                set.seed(setseed)
                 idMiss <- sample(1:n, n*perc.miss)                                    # sample missing cases
                 nMiss  <- length(idMiss)
                 mMax   <- n.marg-1                                                    # maximum num of missing variables for each record

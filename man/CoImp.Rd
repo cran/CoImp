@@ -6,23 +6,25 @@
     Imputation method based on conditional copula functions.
 }
 \usage{
-CoImp(X, n.marg = 2, type.data = "continuous", smoothing = rep(0.5,n.marg),
-      plot.marg = TRUE, plot.bar = TRUE, plot.legend = TRUE, args.legend =
-      list(y = 110, cex = 0.8), model = list(normalCopula(0.5, dim=n.marg,
-      dispstr="ex"), claytonCopula(10, dim=n.marg),gumbelCopula(10, dim=n.marg),
+CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.lo= NULL, 
+      type.data = "continuous", smoothing = rep(0.5,n.marg), plot = TRUE, 
+      model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"), 
+      claytonCopula(10, dim=n.marg),gumbelCopula(10, dim=n.marg),
       frankCopula(10, dim=n.marg)), ...)
-}
+} 
+ 
  %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{X}{a data matrix with missing values. Missing values should be denoted
         with \code{NA}.}
   \item{n.marg}{the number of variables in X.}
+  \item{x.up}{upper value of each margin to be used in the Hit or Miss method.}
+  \item{x.lo}{lower value of each margin to be used in the Hit or Miss method.}
+  \item{q.up}{probabilities to be used in the quantile function to define x.up for each margin.}
+  \item{q.lo}{probabilities to be used in the quantile function to define x.lo for each margin.}   
   \item{type.data}{the nature of the variables in X: \code{discrete} or \code{continuous}.}
   \item{smoothing}{values for the nearest neighbour component of the smoothing parameter of the \code{lp} function.}
-  \item{plot.marg}{logical: if \code{TRUE} plots the estimated marginal densities.}
-  \item{plot.bar}{logical: if \code{TRUE} shows a bar plot of the percentages of missing and available data for each margin.}
-  \item{plot.legend}{logical: see \code{\link{barplot}}.}
-  \item{args.legend}{list of additional arguments to pass to \code{\link{legend}}.}
+  \item{plot}{logical: if \code{TRUE} plots the estimated marginal densities and a bar plot of the percentages of missing and available data for each margin.}  
   \item{model}{a list of copula models to be used for the imputation, see the Details section.
         This should be one of \code{normal}, \code{frank}, \code{clayton} and \code{gumbel}.}
   \item{\dots}{further parameters for \code{\link{fitCopula}}, \code{\link{lp}} and further graphical arguments.}
@@ -63,7 +65,9 @@ CoImp(X, n.marg = 2, type.data = "continuous", smoothing = rep(0.5,n.marg),
 \references{
 Di Lascio, F.M.L. Giannerini, S. and Reale A. (201x) "A multivariate technique based on conditional copula specification for the imputation of complex dependent data". Working paper.
 
-Di Lascio, F.M.L. Giannerini, S. and Reale A. (201x) "Exploring Copulas for the Imputation of Complex Dependent Data". Under review.
+Di Lascio, F.M.L., Giannerini, S. and Reale, A. (2015) "Exploring Copulas for the Imputation of Complex Dependent Data". Statistical Methods & Applications, 24(1), p. 159-175. DOI 10.1007/s10260-014-0287-2.
+
+Di Lascio, F.M.L., Giannerini, S. and Reale, A. (2014) "Imputation of complex dependent data by conditional copulas: analytic versus semiparametric approach", Book of proceedings of the 21st International Conference on Computational Statistics (COMPSTAT 2014), p. 491-497. ISBN 9782839913478.
 
 Bianchi, G. Di Lascio, F.M.L. Giannerini, S. Manzari, A. Reale, A. and Ruocco, G. (2009) "Exploring copulas for the imputation of missing nonlinearly dependent data". Proceedings of the VII Meeting Classification and Data Analysis Group of the Italian Statistical Society (Cladag), Editors: Salvatore Ingrassia and Roberto Rocci, Cleup, p. 429-432. ISBN: 978-88-6129-406-6.
 }
@@ -75,7 +79,7 @@ Simone Giannerini <simone.giannerini@unibo.it>}
 
 \examples{
 
-# generate data from a 4-variate Gumbel copula with different margins
+## generate data from a 4-variate Frank copula with different margins
 
 set.seed(11)
 n.marg <- 4
@@ -97,8 +101,38 @@ x.samp.miss <- replace(x.samp,miss,NA)
 
 # impute missing values
 
-imp <- CoImp(x.samp.miss, n.marg=n.marg, smoothing = rep(0.6,n.marg), TRUE, TRUE, TRUE,
-            type.data="continuous");
+imp <- CoImp(x.samp.miss, n.marg=n.marg, smoothing = rep(0.6,n.marg), plot=TRUE,
+       type.data="continuous");
+
+# methods show and plot
+
+show(imp)
+plot(imp)
+
+## generate data from a 3-variate Clayton copula with different bounded margins
+
+set.seed(11)
+n.marg <- 3
+theta  <- 5
+copula <- claytonCopula(theta, dim = n.marg)
+mymvdc <- mvdc(copula, c("beta", "beta", "beta"), list(list(shape1=4, shape2=1),
+            list(shape1=.5, shape2=.5), list(shape1=2, shape2=3)))
+n      <- 100
+x.samp <- copula::rMvdc(n, mymvdc)
+
+# randomly introduce univariate and multivariate missing
+
+perc.mis    <- 0.2
+set.seed(11)
+miss.row    <- sample(1:n, perc.mis*n, replace=TRUE)
+miss.col    <- sample(1:n.marg, perc.mis*n, replace=TRUE)
+miss        <- cbind(miss.row,miss.col)
+x.samp.miss <- replace(x.samp,miss,NA)
+
+# impute missing values
+
+imp <- CoImp(x.samp.miss, n.marg=n.marg, smoothing = c(0.5,0.3,0.5),
+        x.lo=rep(0,n.marg), x.up=rep(1,n.marg));
 
 # methods show and plot
 

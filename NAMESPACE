@@ -1,10 +1,13 @@
 
-importFrom(graphics, plot)
-importFrom(methods, show)
+importFrom("graphics", "barplot", "plot", "hist", "par", "title")
+importFrom("methods", "show", "new")
+importFrom("grDevices", "dev.new")
+importFrom("stats", "approxfun", "as.formula", "complete.cases","fitted", "integrate", "median", "optim", "optimize", "predict", "quantile", "runif")
 import(copula)
 export(CoImp, MAR, MCAR, PerfMeasure)
 exportClasses(CoImp, MAR, MCAR, PerfMeasure)
 exportMethods(show, plot)
+
 
 
 

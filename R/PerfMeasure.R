@@ -29,14 +29,14 @@
 
 setClass("PerfMeasure",
          representation(MARE     = "numeric"
-                        ,RB      = "numeric"
-                        ,RRMSE   = "numeric"
+                        ,RB      = "vector"#"numeric"
+                        ,RRMSE   = "vector"#"numeric"
                         #,MS      = "numeric"
                         ,TID     = "vector"
                         ),
          prototype = list(MARE     = numeric()
-                          ,RB      = numeric()
-                          ,RRMSE   = numeric()
+                          ,RB      = vector()#numeric()
+                          ,RRMSE   = vector()#numeric()
                           #,MS      = numeric()
                           ,TID     = vector()
                         )
@@ -80,6 +80,10 @@ PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model =
         stop("the two databases have different number of cols")
     if(nrow(db.complete)!=nrow(db.imputed) || nrow(db.imputed)!=nrow(db.missing))
         stop("the two databases have different number of rows")
+    #if(is.null(lambda.true) | is.null(model.true))
+        print("Performance measures are computed in their sample version (on the complete data set)")
+    #if(!is.null(lambda.true) & !is.numeric(lambda.true))
+    #    stop("lambda.true should be a number, the true parameter of the copula model")
     #
     n.marg <- ncol(db.complete)
     ind2   <- which(is.na(db.missing), arr.ind = TRUE)
@@ -136,10 +140,10 @@ PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model =
                     metodo.c   <- setdiff(metodo.c, metodo.c[[1]])
                 }
             }
-            if (inherits(fitc, "try-error") || is.nan(loglikCopula(param=fitc@estimate, x=udat, copula=model[[i]]))) {
+            if (inherits(fitc, "try-error") || is.nan(loglikCopula(param=fitc@estimate, u=udat, copula=model[[i]]))) {
                 loglik[i] <- -10000
             }else{
-                loglik[i] <- loglikCopula(param=fitc@estimate, x=udat, copula=model[[i]])
+                loglik[i] <- loglikCopula(param=fitc@estimate, u=udat, copula=model[[i]])
             }
             if(length(metodo)==0){
                 metodo.fin[i] <- 0
@@ -176,11 +180,23 @@ PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model =
     #
     # RB
     #
-    RB_theta    <- ((model.imp@parameters-model.com@parameters)/model.com@parameters)
+    RB_theta.est      <- ((model.imp@parameters-model.com@parameters)/model.com@parameters)
+    #if(!is.null(lambda.true)){
+    #    RB_theta.true <- ((model.imp@parameters-lambda.true)/lambda.true)
+    #    RB_theta      <- c(RB_theta.est, RB_theta.true)
+    #}else{
+        RB_theta      <- RB_theta.est
+    #}
     #
     # RRMSE
     #
-    RRMSE_theta <- ((model.imp@parameters-model.com@parameters)/model.com@parameters)^2
+    RRMSE_theta.est      <- ((model.imp@parameters-model.com@parameters)/model.com@parameters)^2
+    #if(!is.null(lambda.true)){
+    #    RRMSE_theta.true <- ((model.imp@parameters-lambda.true)/lambda.true)^2
+    #    RRMSE_theta      <- c(RRMSE_theta.est, RRMSE_theta.true)
+    #}else{
+        RRMSE_theta      <- RRMSE_theta.est
+    #}
     #
     # MS
     #
@@ -208,7 +224,14 @@ PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model =
     if(n.marg==2){
         tI.comp <- tailIndex(model.com)
         tI.imp  <- tailIndex(model.imp)
-        TI  <- tI.imp-tI.comp
+        TI.est  <- tI.imp-tI.comp
+#        if(!is.null(model.true)){
+#            tI.true <- tailIndex(model.true)
+#            TI.true <- tI.imp-tI.true
+#            TI      <- c(TI.est,TI.true)
+#        }else{
+            TI <- TI.est
+#        }
     }
     #
     out       <- new("PerfMeasure")
