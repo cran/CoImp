@@ -160,9 +160,9 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
     if(!is.null(q.lo)&(q.lo<=0 || q.lo>=1))
         stop("q.lo must lie in (0, 1)")
     if(is.null(x.up) & is.null(q.up))
-        q.up <- rep(0.999,n.marg)
+        q.up <- rep(0.8,n.marg)
     if(is.null(x.lo) & is.null(q.lo))
-        q.lo <- rep(0.001,n.marg)
+        q.lo <- rep(0.2,n.marg)
     #
     fit0_nn <- list()
     for(i in 1:n.marg){
@@ -257,13 +257,13 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
     }
     #
     dati.fin <- X
-    x.min  <- apply(X,2,min, na.rm=TRUE)
-    x.max  <- apply(X,2,max, na.rm=TRUE)
+    x.min  <- apply(X, 2, min, na.rm=TRUE)
+    x.max  <- apply(X, 2, max, na.rm=TRUE)
     if(is.null(x.up)){
-        x.up <- apply(X,2,quantile,p=q.up, na.rm=TRUE)
+        x.up <- diag(apply(X, 2, quantile, p=q.up, na.rm=TRUE))
     }
     if(is.null(x.lo)){
-        x.lo <- apply(X,2,quantile,p=q.lo, na.rm=TRUE)
+        x.lo <- diag(apply(X, 2, quantile, p=q.lo, na.rm=TRUE))
     }
     for(i in 1:num.rows.na){
         cat("\r Number of imputed rows: ", i, "\n");
@@ -294,9 +294,9 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
         if(lcn==1){
             maxf <- suppressWarnings(optimize(fcond2, interval=c(a, b), maximum=TRUE)$max)
             if(maxf>=aa & maxf<=bb){
-                umissM <- hitormiss(FUN=fcond,p=lcn,h=fcond(maxf),a=aa,b=bb)
+                umissM <- hitormiss(FUN=fcond, p=lcn, h=fcond(maxf), a=aa, b=bb)
             }else{
-                umissM <- hitormiss(FUN=fcond,p=lcn,h=fcond(maxf),a=a,b=b)
+                umissM <- hitormiss(FUN=fcond, p=lcn, h=fcond(maxf), a=a, b=b)
             }
         }else{
             maxf <- suppressWarnings(try(optim(par=meanX[cols.na], fn=fcond, lower=a, upper=b, control = list(fnscale=-1))$par,silent=TRUE))

@@ -6,11 +6,11 @@
     Imputation method based on conditional copula functions.
 }
 \usage{
-CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.lo= NULL, 
-      type.data = "continuous", smoothing = rep(0.5,n.marg), plot = TRUE, 
-      model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"), 
-      claytonCopula(10, dim=n.marg),gumbelCopula(10, dim=n.marg),
-      frankCopula(10, dim=n.marg)), ...)
+CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, 
+    q.lo = NULL, type.data = "continuous", smoothing = rep(0.5,n.marg), 
+    plot = TRUE,  model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"), 
+    claytonCopula(10, dim=n.marg),gumbelCopula(10, dim=n.marg),
+    frankCopula(10, dim=n.marg)), ...)
 } 
  
  %- maybe also 'usage' for other objects documented here.
@@ -18,10 +18,10 @@ CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.lo= NULL,
   \item{X}{a data matrix with missing values. Missing values should be denoted
         with \code{NA}.}
   \item{n.marg}{the number of variables in X.}
-  \item{x.up}{upper value of each margin to be used in the Hit or Miss method.}
-  \item{x.lo}{lower value of each margin to be used in the Hit or Miss method.}
-  \item{q.up}{probabilities to be used in the quantile function to define x.up for each margin.}
-  \item{q.lo}{probabilities to be used in the quantile function to define x.lo for each margin.}   
+  \item{x.up}{a vector of length n.marg with the upper value of each margin used in the Hit or Miss method.}
+  \item{x.lo}{a vector of length n.marg with the lower value of each margin used in the Hit or Miss method.}
+  \item{q.up}{a vector of length n.marg with the probability of the quantile function used to define x.up for each margin.}
+  \item{q.lo}{a vector of length n.marg with the probability of the quantile function used to define x.lo for each margin.}   
   \item{type.data}{the nature of the variables in X: \code{discrete} or \code{continuous}.}
   \item{smoothing}{values for the nearest neighbour component of the smoothing parameter of the \code{lp} function.}
   \item{plot}{logical: if \code{TRUE} plots the estimated marginal densities and a bar plot of the percentages of missing and available data for each margin.}  
@@ -30,15 +30,6 @@ CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.lo= NULL,
   \item{\dots}{further parameters for \code{\link{fitCopula}}, \code{\link{lp}} and further graphical arguments.}
 }
 \details{
-%    \describe{
-%    \item{Usage for continuous variables:}{.\cr
-%    \code{CoImp(X, n.marg = 2, type.data = "continuous", smoothing = rep(0.5,n.marg),
-%        plot.marg = TRUE, plot.bar = TRUE, plot.legend = TRUE, args.legend = list(y = 110,
-%        cex = 0.8), model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"),
-%        claytonCopula(10, dim=n.marg),gumbelCopula(10, dim=n.marg),
-%        frankCopula(10, dim=n.marg)), ...)}}
-%    }
-
     CoImp is an imputation method based on conditional copula functions that allows to impute missing observations according to the multivariate dependence structure of the generating process without any assumptions on the margins. This method can be used independently from the dimension and the kind (monotone or non monotone) of the missing patterns.
 
     Brief description of the approach:
@@ -131,8 +122,8 @@ x.samp.miss <- replace(x.samp,miss,NA)
 
 # impute missing values
 
-imp <- CoImp(x.samp.miss, n.marg=n.marg, smoothing = c(0.5,0.3,0.5),
-        x.lo=rep(0,n.marg), x.up=rep(1,n.marg));
+imp <- CoImp(x.samp.miss, n.marg=n.marg, smoothing = c(0.45,0.2,0.5), plot=TRUE,
+        q.lo=rep(0.1,n.marg), q.up=rep(0.9,n.marg));
 
 # methods show and plot
 

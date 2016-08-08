@@ -62,11 +62,12 @@ MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 # random assignment of missing patter to the obs (row data matrix)
                 set.seed(setseed)
                 res  <- cbind(db.complete,comb2[sample(1:P,size=nrow(db.complete),replace=T),])
-                dati <- as.data.frame(cbind(res[,(n.marg*2+1)],db.complete)) # Y multinomial: number of categories = number of possible (multiv.) missing patters
+                Response <- res[,(n.marg*2+1)]
+                dati <- as.data.frame(cbind(Response,db.complete)) # Y multinomial: number of categories = number of possible (multiv.) missing patters
                 dati[,1] <- as.factor(dati[,1])
                 nomiVar <- names(dati)
                 form    <- as.formula(paste(paste(nomiVar[1], "~", sep=""), paste(nomiVar[-1], collapse= "+")))
-                mod     <- nnet::multinom(form, data=dati)
+                mod     <- nnet::multinom(formula=form, data=dati)
                 prob    <- round(fitted(mod),5)
 
                 # introduction of missing patterns on the basis of the multinomial logistic model

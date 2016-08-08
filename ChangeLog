@@ -1,4 +1,9 @@
-﻿0.3-0
+﻿0.3-1
+    - fixed a bug on x.up and x.lo arguments of the CoImp function;
+    - improved the q.up (x.up) and q.lo (x.lo) arguments of the CoImp function: now it is possible to specify a different value for each margin;
+    - improved the MAR function.
+
+0.3-0
     - introduced some arguments in the CoImp function used in the Hit or Miss and in the maximization of each marginal density function;
     - fixed a problem in the MCAR and MAR functions (missed a set.seed));
     - improved the argument plot of the CoImp function and the colnames in the two plots;
