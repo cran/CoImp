@@ -6,7 +6,7 @@
     Introduction of artificial missing completely at random (MCAR) data in a given data set. Missing values are multivariate and have generic pattern.
 }
 \usage{
-MCAR(db.complete, perc.miss = 0.3, setseed = 13, ...)
+MCAR(db.complete, perc.miss = 0.3, setseed = 13, mcols = NULL, ...)
 
 }
  %- maybe also 'usage' for other objects documented here.
@@ -14,12 +14,13 @@ MCAR(db.complete, perc.miss = 0.3, setseed = 13, ...)
   \item{db.complete}{the complete data matrix.}
   \item{perc.miss}{the percentage of missing value to be generated.}
   \item{setseed}{the seed for the generation of the missing values.}
+  \item{mcols}{the index of the columns in which to introduce MCAR values.}
   \item{\dots}{further parameters for \code{\link{fitCopula}}.}
 }
 \details{
 %    \describe{
 %    \item{Usage for continuous variables:}{.\cr
-%    \code{MCAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...)}}
+%    \code{MCAR <- function(db.complete, perc.miss = 0.3, setseed = 13, mcols = NULL ...)}}
 %    }
 
     MCAR introduce artificial missing completely at random values in a given complete data set. Missing values are multivariate and have generic pattern.
@@ -53,7 +54,7 @@ theta  <- 5
 copula <- frankCopula(theta, dim = n.marg)
 mymvdc <- mvdc(copula, c("norm", "gamma", "beta","gamma"), list(list(mean=7, sd=2),
 list(shape=3, rate=2), list(shape1=4, shape2=1), list(shape=4, rate=3)))
-n      <- 50
+n      <- 30
 x.samp <- rMvdc(n, mymvdc)
 
 # apply MCAR by introducing 30\% of missing data
@@ -61,6 +62,12 @@ x.samp <- rMvdc(n, mymvdc)
 mcar   <- MCAR(db.complete = x.samp, perc.miss = 0.3, setseed = 11)
 
 mcar
+
+# same example as above but introducing missing only in the first and third column
+
+mcar2   <- MCAR(db.complete = x.samp, perc.miss = 0.3, setseed = 11, mcols=c(1,3))
+
+mcar2
 
 }
 

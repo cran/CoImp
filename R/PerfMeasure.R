@@ -71,8 +71,9 @@ setMethod(
 ## ***************************************************************************************************
 
 
-PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"), claytonCopula(10, dim=n.marg),
-                    gumbelCopula(10, dim=n.marg),frankCopula(10, dim=n.marg)), ...){
+PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model = list(normalCopula(0.5, dim=n.marg),
+            claytonCopula(10, dim=n.marg), gumbelCopula(10, dim=n.marg), frankCopula(10, dim=n.marg), tCopula(0.5, dim=n.marg,...),
+            rotCopula(claytonCopula(10,dim=n.marg),flip=rep(TRUE,n.marg)),...), ...){
     #
     # computes a set of performance measures on the imputed data set
     #
@@ -171,9 +172,19 @@ PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model =
         if (inherits(mod.fin, "try-error")) {
             stop("Imputation failed")
         }else{
-            mod.fin.base@parameters <- mod.fin@estimate
+            if(class(mod.fin.base)=="rotExplicitCopula"  | class(mod.fin.base)=="rotCopula"){
+                mod.fin.base@copula@parameters <- mod.fin@estimate
+            }else{
+                mod.fin.base@parameters <- mod.fin@estimate
+            }
         }
         model.two[[k]] <- mod.fin.base
+    }
+    if(class(model.two[[1]])=="rotExplicitCopula"  | class(model.two[[1]])=="rotCopula"){
+         model.two[[1]] <- model.two[[1]]@copula
+    }
+    if(class(model.two[[2]])=="rotExplicitCopula"  | class(model.two[[2]])=="rotCopula"){
+        model.two[[2]] <- model.two[[2]]@copula
     }
     model.com <- model.two[[1]]
     model.imp <- model.two[[2]]

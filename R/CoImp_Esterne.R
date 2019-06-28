@@ -25,6 +25,8 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
+## ***************************************************************************************************
+
 bar.plot <- function(tab, legend.plot = FALSE, args.legend = NULL, ...){ #  MODIFIED VERSION OF THE barplot FUNCTION
         rownames(tab) <- c("Data","Missing")
         #colnames(tab) <- colnames(tab) #paste("X",c(1:ncol(tab)),sep="")
@@ -34,7 +36,7 @@ bar.plot <- function(tab, legend.plot = FALSE, args.legend = NULL, ...){ #  MODI
         return(barplot(tab, beside = TRUE, col = c("grey","red1"), legend = legend.plot, args.legend = args.legend, ylim = c(0, 100), main="Bar Plot", font.main = 3, ...))
 }
 
-###################################################################################
+## ***************************************************************************************************
 
 fit.margin <- function(dataset, param=list(dimc=NULL)){ #  MODIFIED VERSION OF THE FUNCTION ecdf WITH DENOMINATOR N+1
     dimc <- param$dimc
@@ -57,7 +59,7 @@ fit.margin <- function(dataset, param=list(dimc=NULL)){ #  MODIFIED VERSION OF T
     return(udath)
 }
 
-##################################################################################
+## ***************************************************************************************************
 
 fit.margin2 <- function(dataset, param = list(dimc = NULL)){    #  MARGINS ESTIMATION THROUGH PSEUDO-OBSERVATIONS
     n <- ncol(dataset)
@@ -65,7 +67,7 @@ fit.margin2 <- function(dataset, param = list(dimc = NULL)){    #  MARGINS ESTIM
     return(udath)
 }
 
-###################################################################################
+## ***************************************************************************************************
 
 fcond.mod <- function(x,y,ind,model,distr,dens){
     if(length(x)!=length(ind)) stop('Wrong dimensions')
@@ -89,7 +91,7 @@ fcond.mod <- function(x,y,ind,model,distr,dens){
     return(result)
 }
 
-###################################################################################
+## ***************************************************************************************************
 
 hitormiss <- function(FUN,p=1,h,a,b,...){   #  HIT OR MISS MONTE CARLO METHOD (MULTIVARIATE VERSION;
                                             # N.B. it imputes the whole missing vector (not an obs at a time)
@@ -110,4 +112,4 @@ hitormiss <- function(FUN,p=1,h,a,b,...){   #  HIT OR MISS MONTE CARLO METHOD (M
     return(r1)
 }
 
-#################################################################################
+## ***************************************************************************************************

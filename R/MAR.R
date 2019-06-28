@@ -37,7 +37,7 @@ setClass("MAR",
 
 ## ***************************************************************************************************
 
-MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
+MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, mcols = NULL, ...){
                 # introduce MAR in a dataset
                 if(!is.matrix(db.complete))
                     stop("the data matrix in entry should be a matrix")
@@ -46,9 +46,15 @@ MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 if(sum(is.na(db.complete))!=0)
                     stop("the data matrix in entry should be complete")
                 #
-                n.marg <- ncol(db.complete)
-                n      <- nrow(db.complete)
-
+                if(is.null(mcols)==TRUE){
+                    db.missing <- db.complete
+                }else{
+                    db.missing <- db.complete[,mcols]
+                }
+                n.marg <- ncol(db.missing)
+                n      <- nrow(db.missing)
+                if((n*perc.miss)<1)
+                    stop("there are no missing to be introduced; perc.miss should be increased")
                 # possible missing patterns except the null one; the complete pattern is the baseline (0=missing, 1=osservato)
                 comb     <- gtools::permutations(n=2, r=n.marg, v=c(0,1), repeats.allowed=TRUE)
                 dove.NA  <- which(comb==0, arr.ind=T) # introduction of NA instead of zero
@@ -61,9 +67,9 @@ MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
 
                 # random assignment of missing patter to the obs (row data matrix)
                 set.seed(setseed)
-                res  <- cbind(db.complete,comb2[sample(1:P,size=nrow(db.complete),replace=T),])
+                res  <- cbind(db.missing,comb2[sample(1:P,size=nrow(db.missing),replace=T),])
                 Response <- res[,(n.marg*2+1)]
-                dati <- as.data.frame(cbind(Response,db.complete)) # Y multinomial: number of categories = number of possible (multiv.) missing patters
+                dati <- as.data.frame(cbind(Response,db.missing)) # Y multinomial: number of categories = number of possible (multiv.) missing patters
                 dati[,1] <- as.factor(dati[,1])
                 nomiVar <- names(dati)
                 form    <- as.formula(paste(paste(nomiVar[1], "~", sep=""), paste(nomiVar[-1], collapse= "+")))
@@ -71,7 +77,6 @@ MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 prob    <- round(fitted(mod),5)
 
                 # introduction of missing patterns on the basis of the multinomial logistic model
-                db.missing <- db.complete
                 k          <- 0
                 for(i in 1:n){
                     u <- runif(1)
@@ -80,9 +85,16 @@ MAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                         db.missing[i,] <- as.numeric(res[i,1:n.marg]*res[i,(n.marg+1):(2*n.marg)])
                     }
                 }
+                db.missing.fin <- db.complete
+                db.missing.fin <- db.complete
+                if(is.null(mcols)==TRUE){
+                    db.missing.fin <- db.missing
+                }else{
+                    db.missing.fin[,mcols] <- db.missing
+                }
                 #
                 out                     <- new("MAR")
                 out@perc.record.missing <- k/n*100;
-                out@db.missing          <- db.missing;
+                out@db.missing          <- db.missing.fin;
                 return(out);
 }

@@ -6,11 +6,13 @@
     Imputation method based on conditional copula functions.
 }
 \usage{
-CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, 
-    q.lo = NULL, type.data = "continuous", smoothing = rep(0.5,n.marg), 
-    plot = TRUE,  model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"), 
-    claytonCopula(10, dim=n.marg),gumbelCopula(10, dim=n.marg),
-    frankCopula(10, dim=n.marg)), ...)
+CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = rep(0.85, n.marg), 
+            q.lo = rep(0.15, n.marg), type.data = "continuous", smoothing = 
+            rep(0.5, n.marg), plot = TRUE, model = list(normalCopula(0.5, 
+            dim=n.marg),  claytonCopula(10, dim=n.marg), gumbelCopula(10, 
+            dim=n.marg), frankCopula(10, dim=n.marg), tCopula(0.5, 
+            dim=n.marg,...), rotCopula(claytonCopula(10,dim=n.marg), 
+            flip=rep(TRUE,n.marg)),...), start. = NULL, ...)
 } 
  
  %- maybe also 'usage' for other objects documented here.
@@ -18,15 +20,17 @@ CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL,
   \item{X}{a data matrix with missing values. Missing values should be denoted
         with \code{NA}.}
   \item{n.marg}{the number of variables in X.}
-  \item{x.up}{a vector of length n.marg with the upper value of each margin used in the Hit or Miss method.}
-  \item{x.lo}{a vector of length n.marg with the lower value of each margin used in the Hit or Miss method.}
-  \item{q.up}{a vector of length n.marg with the probability of the quantile function used to define x.up for each margin.}
-  \item{q.lo}{a vector of length n.marg with the probability of the quantile function used to define x.lo for each margin.}   
+  \item{x.up}{a numeric vector of length n.marg with the upper value of each margin used in the Hit or Miss method. Specify either x.up xor q.up.}
+  \item{x.lo}{a numeric vector of length n.marg with the lower value of each margin used in the Hit or Miss method. Specify either x.lo xor q.lo.}
+  \item{q.up}{a numeric vector of length n.marg with the probability of the quantile used to define x.up for each margin. Specify either x.up xor q.up.}
+  \item{q.lo}{a numeric vector of length n.marg with the probability of the quantile used to define x.lo for each margin. Specify either x.lo xor q.lo.}   
   \item{type.data}{the nature of the variables in X: \code{discrete} or \code{continuous}.}
   \item{smoothing}{values for the nearest neighbour component of the smoothing parameter of the \code{lp} function.}
   \item{plot}{logical: if \code{TRUE} plots the estimated marginal densities and a bar plot of the percentages of missing and available data for each margin.}  
   \item{model}{a list of copula models to be used for the imputation, see the Details section.
-        This should be one of \code{normal}, \code{frank}, \code{clayton} and \code{gumbel}.}
+        This should be one of \code{normal} and \code{t} (with \code{dispstr} as in the \code{copula} package), \code{frank}, \code{clayton}, \code{gumbel}, and \code{rotated copulas}.
+        As in \code{fitCopula}, itau fitting coerced tCopula to 'df.fixed=TRUE'.}
+  \item{start.}{a numeric vector of starting values for the parameter optimization via \code{\link{optim}}.}
   \item{\dots}{further parameters for \code{\link{fitCopula}}, \code{\link{lp}} and further graphical arguments.}
 }
 \details{
@@ -72,7 +76,7 @@ Simone Giannerini <simone.giannerini@unibo.it>}
 
 ## generate data from a 4-variate Frank copula with different margins
 
-set.seed(11)
+set.seed(21)
 n.marg <- 4
 theta  <- 5
 copula <- frankCopula(theta, dim = n.marg)
@@ -83,7 +87,7 @@ x.samp <- copula::rMvdc(n, mymvdc)
 
 # randomly introduce univariate and multivariate missing
 
-perc.mis    <- 0.5
+perc.mis    <- 0.3
 set.seed(11)
 miss.row    <- sample(1:n, perc.mis*n, replace=TRUE)
 miss.col    <- sample(1:n.marg, perc.mis*n, replace=TRUE)
@@ -93,14 +97,17 @@ x.samp.miss <- replace(x.samp,miss,NA)
 # impute missing values
 
 imp <- CoImp(x.samp.miss, n.marg=n.marg, smoothing = rep(0.6,n.marg), plot=TRUE,
-       type.data="continuous");
+       type.data="continuous", model=list(normalCopula(0.5, dim=n.marg),
+       frankCopula(10, dim=n.marg), gumbelCopula(10, dim=n.marg)));
 
 # methods show and plot
 
 show(imp)
 plot(imp)
 
-## generate data from a 3-variate Clayton copula with different bounded margins
+\dontrun{
+## generate data from a 3-variate Clayton copula and introduce missing by
+## using the MCAR function and try to impute through a rotated copula
 
 set.seed(11)
 n.marg <- 3
@@ -108,28 +115,27 @@ theta  <- 5
 copula <- claytonCopula(theta, dim = n.marg)
 mymvdc <- mvdc(copula, c("beta", "beta", "beta"), list(list(shape1=4, shape2=1),
             list(shape1=.5, shape2=.5), list(shape1=2, shape2=3)))
-n      <- 100
+n      <- 50
 x.samp <- copula::rMvdc(n, mymvdc)
 
-# randomly introduce univariate and multivariate missing
+# randomly introduce MCAR univariate and multivariate missing
 
-perc.mis    <- 0.2
-set.seed(11)
-miss.row    <- sample(1:n, perc.mis*n, replace=TRUE)
-miss.col    <- sample(1:n.marg, perc.mis*n, replace=TRUE)
-miss        <- cbind(miss.row,miss.col)
-x.samp.miss <- replace(x.samp,miss,NA)
+perc.miss <- 0.15
+setseed   <- set.seed(13)
+x.samp.miss <- MCAR(x.samp, perc.miss, setseed)
+x.samp.miss <- x.samp.miss@"db.missing"
 
 # impute missing values
 
 imp <- CoImp(x.samp.miss, n.marg=n.marg, smoothing = c(0.45,0.2,0.5), plot=TRUE,
-        q.lo=rep(0.1,n.marg), q.up=rep(0.9,n.marg));
+        q.lo=rep(0.1,n.marg), q.up=rep(0.9,n.marg), model=list(claytonCopula(0.5,
+        dim=n.marg),  rotCopula(claytonCopula(0.5,dim=n.marg))));
 
 # methods show and plot
 
 show(imp)
 plot(imp)
-
+}
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the % R documentation directory.

@@ -6,14 +6,15 @@
     Introduction of artificial missing at random (MAR) data in a given data set. Missing values are multivariate and have generic pattern.
 }
 \usage{
-MAR(db.complete, perc.miss = 0.3, setseed = 13, ...)
+MAR(db.complete, perc.miss = 0.3, setseed = 13, mcols = NULL, ...)
 
 }
  %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{db.complete}{the complete data matrix.}
-  \item{perc.miss}{the percentage of missing value to be generated.}
+  \item{perc.miss}{the percentage of missing values to be generated.}
   \item{setseed}{the seed for the generation of the missing values.}
+  \item{mcols}{the index of the columns in which to introduce MAR values.}
   \item{\dots}{further parameters for \code{\link{fitCopula}}.}
 }
 \details{
@@ -54,7 +55,7 @@ theta  <- 5
 copula <- frankCopula(theta, dim = n.marg)
 mymvdc <- mvdc(copula, c("norm", "gamma", "beta","gamma"), list(list(mean=7, sd=2),
 list(shape=3, rate=2), list(shape1=4, shape2=1), list(shape=4, rate=3)))
-n      <- 50
+n      <- 30
 x.samp <- rMvdc(n, mymvdc)
 
 # apply MAR by introducing 30\% of missing data
@@ -62,7 +63,6 @@ x.samp <- rMvdc(n, mymvdc)
 mar    <- MAR(db.complete = x.samp, perc.miss = 0.3, setseed = 11)
 
 mar
-
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the % R documentation directory.

@@ -37,8 +37,9 @@ setClass("MCAR",
 
 ## ***************************************************************************************************
 
-MCAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
+MCAR <- function(db.complete, perc.miss = 0.3, setseed = 13, mcols = NULL, ...){
                 # introduce MCAR in a dataset
+                # a subset of cols where introduce MCAR values can be specified in "mcols"
                 if(!is.matrix(db.complete))
                     stop("the data matrix in entry should be a matrix")
                 if(perc.miss<=0)
@@ -46,8 +47,15 @@ MCAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 if(sum(is.na(db.complete))!=0)
                     stop("the data matrix in entry should be complete")
                 #
-                n.marg <- ncol(db.complete)
-                n      <- nrow(db.complete)
+                if(is.null(mcols)==TRUE){
+                    db.missing <- db.complete
+                }else{
+                    db.missing <- db.complete[,mcols]
+                }
+                n.marg <- ncol(db.missing)
+                n      <- nrow(db.missing)
+                if((n*perc.miss)<1)
+                    stop("there are no missing to be introduced; perc.miss should be increased")
                 set.seed(setseed)
                 idMiss <- sample(1:n, n*perc.miss)                                    # sample missing cases
                 nMiss  <- length(idMiss)
@@ -55,14 +63,19 @@ MCAR <- function(db.complete, perc.miss = 0.3, setseed = 13, ...){
                 set.seed(setseed)
                 howmanyMiss <- sapply(idMiss, function(x) sample(1:mMax, 1))          # num of missing to be introduced in each selected id (idMiss)
                 misscols    <- lapply(howmanyMiss, function(x) sample(1:n.marg, x))   # variables (in num=howmanyMiss) to be missed for each id
-                db.missing  <- db.complete
                 for(i in 1:nMiss){
                     for (j in misscols[[i]]){
                         db.missing[idMiss[i],j] <- NA
                     }
                 }
+                db.missing.fin <- db.complete
+                if(is.null(mcols)==TRUE){
+                    db.missing.fin <- db.missing
+                }else{
+                    db.missing.fin[,mcols] <- db.missing
+                }
                 #
                 out       <- new("MCAR")
-                out@db.missing  <- db.missing;
+                out@db.missing  <- db.missing.fin;
                 return(out);
 }

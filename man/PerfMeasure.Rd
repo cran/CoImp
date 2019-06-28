@@ -6,9 +6,12 @@
     Set of measures useful to evaluate the goodness of the used imputation method.
 }
 \usage{
-PerfMeasure(db.complete, db.imputed, db.missing, n.marg = 2, 
-model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"), claytonCopula(10, 
-dim=n.marg), gumbelCopula(10, dim=n.marg), frankCopula(10, dim=n.marg)), ...)
+PerfMeasure(db.complete, db.imputed, db.missing, n.marg = 2, model = 
+                        list(normalCopula(0.5, dim=n.marg), claytonCopula(10, 
+                        dim=n.marg), gumbelCopula(10, dim=n.marg), frankCopula(10, 
+                        dim=n.marg), tCopula(0.5, dim=n.marg,...), 
+                        rotCopula(claytonCopula(10,dim=n.marg),flip=rep(TRUE,n.marg)),
+                        ...), ...)
 }                    
                     
  %- maybe also 'usage' for other objects documented here.
@@ -18,15 +21,18 @@ dim=n.marg), gumbelCopula(10, dim=n.marg), frankCopula(10, dim=n.marg)), ...)
   \item{db.missing}{the data matrix with \code{NA} data.}
   \item{n.marg}{the number of variables in db.complete.}
   \item{model}{a list of copula models to be used for the imputation. See the Details section.
-         This should be one of \code{normal}, \code{frank}, \code{clayton} and \code{gumbel}.}
+        This should be one of \code{normal} and \code{t} (with \code{dispstr} as in the \code{copula} package), \code{frank}, \code{clayton}, \code{gumbel}, and \code{rotated copulas}.
+        As in \code{fitCopula}, itau fitting coerced tCopula to 'df.fixed=TRUE'.}
   \item{\dots}{further parameters for \code{\link{fitCopula}}.}
 }
 \details{
 %%    \describe{
 %%    \item{Usage for continuous variables:}{.\cr
-%%    \code{PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2,
-%%    model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"), claytonCopula(10,
-%%    dim=n.marg), gumbelCopula(10, dim=n.marg), frankCopula(10, dim=n.marg)), ...)}}
+%%    \code{PerfMeasure(db.complete, db.imputed, db.missing, n.marg = 2, 
+%%      model = list(normalCopula(0.5, dim=n.marg),  
+ %%    claytonCopula(10, dim=n.marg), gumbelCopula(10, dim=n.marg), 
+%%     frankCopula(10, dim=n.marg), tCopula(0.5, dim=n.marg,...),
+%%    rotCopula(claytonCopula(10,dim=n.marg),flip=rep(TRUE,n.marg)),...))}}
 %%    }
 
     PerfMeasure computes some measures useful for evaluating the goodness of the used imputation method.
@@ -58,7 +64,7 @@ Francesca Marta Lilja Di Lascio <marta.dilascio@unibz.it>,
 Simone Giannerini <simone.giannerini@unibo.it>}
 
 \examples{
-
+\dontrun{
 # generate data from a 4-variate Gumbel copula with different margins
 
 set.seed(11)
@@ -72,7 +78,7 @@ x.samp <- rMvdc(n, mymvdc)
 
 # randomly introduce univariate and multivariate missing
 
-perc.mis    <- 0.5
+perc.mis    <- 0.3
 set.seed(11)
 miss.row    <- sample(1:n, perc.mis*n, replace=TRUE)
 miss.col    <- sample(1:n.marg, perc.mis*n, replace=TRUE)
@@ -88,11 +94,10 @@ imp
 # apply PerfMeasure to the imputed data set
 
 pm <- PerfMeasure(db.complete=x.samp, db.missing=x.samp.miss,
-                  db.imputed=imp@"Imputed.data.matrix", n.marg=4)
-
+            db.imputed=imp@"Imputed.data.matrix", n.marg=4)
 pm
-
 str(pm)
+}
 
 }
 

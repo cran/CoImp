@@ -132,9 +132,13 @@ setMethod(
 
 ## ***************************************************************************************************
 
-CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.lo= NULL, type.data = "continuous",
- smoothing = rep(0.5,n.marg), plot = TRUE, model = list(normalCopula(0.5, dim=n.marg, dispstr="ex"),
- claytonCopula(10, dim=n.marg), gumbelCopula(10, dim=n.marg), frankCopula(10, dim=n.marg)),...){
+CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = rep(0.85, n.marg),
+            q.lo = rep(0.15, n.marg), type.data = "continuous", smoothing =
+            rep(0.5, n.marg), plot = TRUE, model = list(normalCopula(0.5,
+            dim=n.marg),  claytonCopula(10, dim=n.marg), gumbelCopula(10,
+            dim=n.marg), frankCopula(10, dim=n.marg), tCopula(0.5,
+            dim=n.marg,...), rotCopula(claytonCopula(10,dim=n.marg),
+            flip=rep(TRUE,n.marg)),...), start. = NULL, ...){
     #
     if(!is.matrix(X))
         stop("Tha data should be a matrix")
@@ -155,14 +159,14 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
         stop("Specify either x.up xor q.up")
     if(!is.null(x.lo) & !is.null(q.lo))
         stop("Specify either x.lo xor q.lo")
-    if(!is.null(q.up)&(q.up<=0 || q.up>=1))
+    if(!is.null(q.up) & (any(q.up<=0) || any(q.up>=1)))
         stop("q.up must lie in (0, 1)")
-    if(!is.null(q.lo)&(q.lo<=0 || q.lo>=1))
+    if(!is.null(q.lo) & (any(q.lo<=0) || any(q.lo>=1)))
         stop("q.lo must lie in (0, 1)")
     if(is.null(x.up) & is.null(q.up))
-        q.up <- rep(0.8,n.marg)
+        stop("Specify either x.up xor q.up")
     if(is.null(x.lo) & is.null(q.lo))
-        q.lo <- rep(0.2,n.marg)
+        stop("Specify either x.lo xor q.lo")
     #
     fit0_nn <- list()
     for(i in 1:n.marg){
@@ -186,7 +190,6 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
     num.rows.na  <- length(ind.cols.na)
     #
     n.mod        <- length(model)
-    startco      <- c(.5,rep(10,(n.mod-1)))
     loglik       <- double(length=n.mod)
     metodo.fin   <- double(length=n.mod)
     metodo.optim.fin <- double(length=n.mod)
@@ -195,14 +198,14 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
         metodo.c <- "BFGS"
         udat.na  <- fit.margin(dataset=t(X), param=list(dimc=n.marg))
         udat     <- udat.na[complete.cases(udat.na),]
-        fitc     <- try(fitCopula(data=udat, copula=model[[i]], start=startco[i], method=metodo, optim.method=metodo.c), silent=TRUE)
+        fitc     <- try(fitCopula(data=udat, copula=model[[i]], start=start., method=metodo, optim.method=metodo.c), silent=TRUE)
         if(inherits(fitc, "try-error")==TRUE){
             metodo <- c("mpl", "itau", "irho")
             repeat{
                 if(length(metodo)==0 || inherits(fitc, "try-error")==FALSE)
                     break
                 fitc <- try(fitCopula(data = udat, copula = model[[i]],
-                        start = startco[i], method = metodo[[1]]), silent = TRUE)
+                        start = start., method = metodo[[1]]), silent = TRUE)
                 metodo <- setdiff(metodo, metodo[[1]])
             }
         }
@@ -216,7 +219,7 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
                     if(length(metodo)==0 || inherits(fitc, "try-error")==FALSE)
                         break
                     fitc <- try(fitCopula(data = udat, copula = model[[i]],
-                            start = startco[i], method = metodo[[1]], optim.method=metodo.c[[1]]), silent = TRUE)
+                            start = start., method = metodo[[1]], optim.method=metodo.c[[1]]), silent = TRUE)
                     metodo <- setdiff(metodo, metodo[[1]])
                 }
                 metodo.c <- setdiff(metodo.c, metodo.c[[1]])
@@ -249,11 +252,15 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
         udat.na <- fit.margin2(dataset=t(X), param=list(dimc=n.marg))
         udat <- udat.na[complete.cases(udat.na),]
     }
-    mod.fin <- try(fitCopula(data=udat, copula=mod.fin.base, start=startco[best], method=metodo.fin.base, optim.method=metodo.optim.fin.base),silent=TRUE)
+    mod.fin <- try(fitCopula(data=udat, copula=mod.fin.base, start=start., method=metodo.fin.base, optim.method=metodo.optim.fin.base),silent=TRUE)
     if (inherits(mod.fin, "try-error")) {
         stop("Imputation failed")
     }else{
-        mod.fin.base@parameters <- mod.fin@estimate
+        if(class(mod.fin.base)=="rotExplicitCopula"  | class(mod.fin.base)=="rotCopula"){
+            mod.fin.base@copula@parameters <- mod.fin@estimate
+        }else{
+            mod.fin.base@parameters <- mod.fin@estimate
+        }
     }
     #
     dati.fin <- X
@@ -323,14 +330,14 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
         metodo.c <- "BFGS"
         udat.na.imp <- fit.margin(dataset=t(dati.fin), param=list(dimc=n.marg))
         udat.imp <- udat.na.imp[complete.cases(udat.na.imp),]
-        fitc.imp <- try(fitCopula(data=udat.imp, copula=model[[i]], start=startco[i], method=metodo, optim.method=metodo.c), silent=TRUE)
+        fitc.imp <- try(fitCopula(data=udat.imp, copula=model[[i]], start=start., method=metodo, optim.method=metodo.c), silent=TRUE)
         if(inherits(fitc.imp, "try-error")==TRUE){
             metodo <- c("mpl","itau","irho")
             repeat{
                 if(length(metodo)==0 || inherits(fitc.imp, "try-error")==FALSE)
                     break
                 fitc.imp <- try(fitCopula(data = udat.imp, copula = model[[i]],
-                        start = startco[i], method = metodo[[1]]), silent = TRUE)
+                        start = start., method = metodo[[1]]), silent = TRUE)
                 metodo <- setdiff(metodo, metodo[[1]])
             }
         }
@@ -344,7 +351,7 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
                     if(length(metodo)==0 || inherits(fitc.imp, "try-error")==FALSE)
                         break
                     fitc.imp <- try(fitCopula(data = udat.imp, copula = model[[i]],
-                            start = startco[i], method = metodo[[1]], optim.method=metodo.c[[1]]), silent = TRUE)
+                            start = start., method = metodo[[1]], optim.method=metodo.c[[1]]), silent = TRUE)
                     metodo <- setdiff(metodo, metodo[[1]])
                 }
                 metodo.c <- setdiff(metodo.c, metodo.c[[1]])
@@ -377,11 +384,15 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
         udat.na.imp <- fit.margin2(dataset=t(dati.fin), param=list(dimc=n.marg))
         udat.imp <- udat.na.imp[complete.cases(udat.na.imp),]
     }
-    mod.fin.imp <- try(fitCopula(data=udat.imp, copula=mod.fin.base.imp, start=startco[best.imp], method=metodo.fin.base.imp, optim.method=metodo.optim.fin.base.imp),silent=TRUE)
+    mod.fin.imp <- try(fitCopula(data=udat.imp, copula=mod.fin.base.imp, start=start., method=metodo.fin.base.imp, optim.method=metodo.optim.fin.base.imp),silent=TRUE)
     if (inherits(mod.fin.imp, "try-error")) {
         stop("Imputation failed")
     }else{
-        mod.fin.base.imp@parameters <- mod.fin.imp@estimate
+        if(class(mod.fin.base.imp)=="rotExplicitCopula" | class(mod.fin.base.imp)=="rotCopula"){
+            mod.fin.base.imp@copula@parameters <- mod.fin.imp@estimate
+        }else{
+            mod.fin.base.imp@parameters <- mod.fin.imp@estimate
+        }
     }
     #
     perc.miss <- round(colMeans(is.na(X)*100),2)
@@ -392,6 +403,12 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = NULL, q.
     if(is.null(colnames(X))) colnames(X) <- paste("X",c(1:n.marg),sep="")
     ifelse(is.null(colnames(X)), colnames(dati.fin) <- paste("X",c(1:n.marg),sep=""), colnames(dati.fin) <- colnames(X))
     #
+    if(class(mod.fin.base)=="rotExplicitCopula"  | class(mod.fin.base)=="rotCopula"){
+         mod.fin.base <- mod.fin.base@copula
+    }
+    if(class(mod.fin.base.imp)=="rotExplicitCopula"  | class(mod.fin.base.imp)=="rotCopula"){
+        mod.fin.base.imp <- mod.fin.base.imp@copula
+    }
     mod.pre  <- list(model = mod.fin.base@class, dimension = mod.fin.base@dimension,  parameter = mod.fin.base@parameters, number = best)
     mod.post <- list(model = mod.fin.base.imp@class, dimension = mod.fin.base.imp@dimension, parameter = mod.fin.base.imp@parameters, number = best.imp)
     #
