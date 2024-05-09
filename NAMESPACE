@@ -1,11 +1,11 @@
-
 importFrom("graphics", "barplot", "plot", "hist", "par", "title")
 importFrom("methods", "show", "new")
 importFrom("grDevices", "dev.new")
-importFrom("stats", "approxfun", "as.formula", "complete.cases","fitted", "integrate", "median", "optim", "optimize", "predict", "quantile", "runif")
+importFrom("stats", "approxfun", "as.formula", "complete.cases","fitted", "integrate", "median", "optim", "optimize", "predict", "quantile", "runif", "as.dist", "dist", "cor")
+importFrom("cluster", "daisy")
 import(copula)
-export(CoImp, MAR, MCAR, PerfMeasure)
-exportClasses(CoImp, MAR, MCAR, PerfMeasure)
+export(CoImp, MAR, MCAR, PerfMeasure, NPCoImp)
+exportClasses(CoImp, MAR, MCAR, PerfMeasure, NPCoImp)
 exportMethods(show, plot)
 
 

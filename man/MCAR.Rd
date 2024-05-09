@@ -30,8 +30,6 @@ MCAR(db.complete, perc.miss = 0.3, setseed = 13, mcols = NULL, ...)
 }
 
 \references{
-Di Lascio, F.M.L. Giannerini, S. and Reale A. (201x) "A multivariate technique based on conditional copula specification for the imputation of complex dependent data". Working paper.
-
 Di Lascio, F.M.L., Giannerini, S. and Reale, A. (2015) "Exploring Copulas for the Imputation of Complex Dependent Data". Statistical Methods & Applications, 24(1), p. 159-175. DOI 10.1007/s10260-014-0287-2.
 
 Di Lascio, F.M.L., Giannerini, S. and Reale, A. (2014) "Imputation of complex dependent data by conditional copulas: analytic versus semiparametric approach", Book of proceedings of the 21st International Conference on Computational Statistics (COMPSTAT 2014), p. 491-497. ISBN 9782839913478.
@@ -40,7 +38,7 @@ Bianchi, G. Di Lascio, F.M.L. Giannerini, S. Manzari, A. Reale, A. and Ruocco, G
 }
 
 \author{
-Francesca Marta Lilja Di Lascio <marta.dilascio@unibz.it>,
+F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 
 Simone Giannerini <simone.giannerini@unibo.it>}
 

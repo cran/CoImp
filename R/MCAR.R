@@ -3,7 +3,7 @@
 ### A COPULA BASED IMPUTATION METHOD
 ##
 ##  The authors of this software are
-##  Francesca Marta Lilja Di Lascio, and
+##  F. Marta L. Di Lascio, and
 ##  Simone Giannerini, Copyright (c) 2013
 
 ##  Permission to use, copy, modify, and distribute this software for any

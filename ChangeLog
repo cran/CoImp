@@ -49,5 +49,6 @@
     - added a check to fcond.mod related to a bug in dcopula (package copula); to be removed;
     - fixed import warning on import(graphics).
 
-
+2.0-0
+    - added a new function (class NPCoImp) that implements an additional imputation method based on the empirical conditional copula.
 

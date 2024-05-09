@@ -3,7 +3,7 @@
 ### A COPULA BASED IMPUTATION METHOD
 ##
 ##  The authors of this software are
-##  Francesca Marta Lilja Di Lascio, and
+##  F. Marta L. Di Lascio, and
 ##  Simone Giannerini, Copyright (c) 2013
 
 ##  Permission to use, copy, modify, and distribute this software for any
@@ -172,7 +172,7 @@ PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model =
         if (inherits(mod.fin, "try-error")) {
             stop("Imputation failed")
         }else{
-            if(class(mod.fin.base)=="rotExplicitCopula"  | class(mod.fin.base)=="rotCopula"){
+            if(inherits(mod.fin.base, what="rotExplicitCopula")  | inherits(mod.fin.base, what="rotCopula")){
                 mod.fin.base@copula@parameters <- mod.fin@estimate
             }else{
                 mod.fin.base@parameters <- mod.fin@estimate
@@ -180,10 +180,10 @@ PerfMeasure <- function(db.complete, db.imputed, db.missing, n.marg = 2, model =
         }
         model.two[[k]] <- mod.fin.base
     }
-    if(class(model.two[[1]])=="rotExplicitCopula"  | class(model.two[[1]])=="rotCopula"){
+    if(inherits(model.two[[1]], what="rotExplicitCopula")  | inherits(model.two[[1]], what="rotCopula")){
          model.two[[1]] <- model.two[[1]]@copula
     }
-    if(class(model.two[[2]])=="rotExplicitCopula"  | class(model.two[[2]])=="rotCopula"){
+    if(inherits(model.two[[2]], what="rotExplicitCopula")  | inherits(model.two[[2]], what="rotCopula")){
         model.two[[2]] <- model.two[[2]]@copula
     }
     model.com <- model.two[[1]]

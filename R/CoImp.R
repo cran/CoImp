@@ -8,7 +8,7 @@
 ### A COPULA BASED IMPUTATION METHOD
 ##
 ##  The authors of this software are
-##  Francesca Marta Lilja Di Lascio, and
+##  F. Marta L. Di Lascio, and
 ##  Simone Giannerini, Copyright (c) 2013
 
 ##  Permission to use, copy, modify, and distribute this software for any
@@ -256,7 +256,7 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = rep(0.85
     if (inherits(mod.fin, "try-error")) {
         stop("Imputation failed")
     }else{
-        if(class(mod.fin.base)=="rotExplicitCopula"  | class(mod.fin.base)=="rotCopula"){
+        if(inherits(mod.fin.base, what="rotExplicitCopula")  | inherits(mod.fin.base, what="rotCopula")){
             mod.fin.base@copula@parameters <- mod.fin@estimate
         }else{
             mod.fin.base@parameters <- mod.fin@estimate
@@ -388,7 +388,7 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = rep(0.85
     if (inherits(mod.fin.imp, "try-error")) {
         stop("Imputation failed")
     }else{
-        if(class(mod.fin.base.imp)=="rotExplicitCopula" | class(mod.fin.base.imp)=="rotCopula"){
+        if(inherits(mod.fin.base.imp,what="rotExplicitCopula") | inherits(mod.fin.base.imp,what="rotCopula")){
             mod.fin.base.imp@copula@parameters <- mod.fin.imp@estimate
         }else{
             mod.fin.base.imp@parameters <- mod.fin.imp@estimate
@@ -403,10 +403,10 @@ CoImp <- function(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = rep(0.85
     if(is.null(colnames(X))) colnames(X) <- paste("X",c(1:n.marg),sep="")
     ifelse(is.null(colnames(X)), colnames(dati.fin) <- paste("X",c(1:n.marg),sep=""), colnames(dati.fin) <- colnames(X))
     #
-    if(class(mod.fin.base)=="rotExplicitCopula"  | class(mod.fin.base)=="rotCopula"){
+    if(inherits(mod.fin.base, what="rotExplicitCopula")  | inherits(mod.fin.base, what="rotCopula")){
          mod.fin.base <- mod.fin.base@copula
     }
-    if(class(mod.fin.base.imp)=="rotExplicitCopula"  | class(mod.fin.base.imp)=="rotCopula"){
+    if(inherits(mod.fin.base.imp, what="rotExplicitCopula")  | inherits(mod.fin.base.imp, what="rotCopula")){
         mod.fin.base.imp <- mod.fin.base.imp@copula
     }
     mod.pre  <- list(model = mod.fin.base@class, dimension = mod.fin.base@dimension,  parameter = mod.fin.base@parameters, number = best)
