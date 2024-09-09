@@ -21,7 +21,7 @@ Objects can be created by calls of the form \code{new("CoImp", ...)}.
             \code{number}   \tab the index of the estimated model in the list of models given in input.\cr
             }
         }
-    \item{\code{Estimation.Method}:}{Object of class \code{"character"}. The estimation method used for the copula model in \code{Estimated.Model}. Allowed methods are in \code{\link{fitCopula}}.}
+    \item{\code{Estimation.Method}:}{Object of class \code{"character"}. The estimation method used for the copula model in \code{Estimated.Model}. Allowed methods are in \code{\link[copula]{fitCopula}}.}
     \item{\code{Index.matrix.NA}:}{Object of class \code{"matrix"}. Matrix of row and column indexes of missing data.}
     \item{\code{Smooth.param}:}{Object of class \code{"numeric"}. The values of the nearest neighbor component of the smoothing parameter of the \code{lp} function.}
     \item{Imputed.data.matrix}{Object of class \code{"matrix"}. The imputed data matrix.}
@@ -33,7 +33,7 @@ Objects can be created by calls of the form \code{new("CoImp", ...)}.
             \code{number}   \tab the index of the estimated model in the list of models given in input.\cr
             }
         }
-    \item{Estimation.Method.Imp}{Object of class \code{"character"}.The estimation method used for the copula model in \code{Estimated.Model.Imp}. Allowed methods are in \code{\link{fitCopula}}.}
+    \item{Estimation.Method.Imp}{Object of class \code{"character"}.The estimation method used for the copula model in \code{Estimated.Model.Imp}. Allowed methods are in \code{\link[copula]{fitCopula}}.}
   }
 }
 
@@ -58,7 +58,10 @@ Simone Giannerini <simone.giannerini@unibo.it>
 }
 
 \seealso{
-    See Also \code{\link{CoImp}}, \code{\link{MCAR}}, \code{\link{MAR}}, \code{\link{lp}} and \code{\linkS4class{copula}}.
+    \code{\link{NPCoImp}}, 
+    \code{\link{MCAR}}, 
+    \code{\link{MAR}},
+    \code{\link[copula]{fitCopula}}.
 }
 
 \examples{

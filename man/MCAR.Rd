@@ -15,7 +15,7 @@ MCAR(db.complete, perc.miss = 0.3, setseed = 13, mcols = NULL, ...)
   \item{perc.miss}{the percentage of missing value to be generated.}
   \item{setseed}{the seed for the generation of the missing values.}
   \item{mcols}{the index of the columns in which to introduce MCAR values.}
-  \item{\dots}{further parameters for \code{\link{fitCopula}}.}
+  \item{\dots}{further parameters for \code{\link[copula]{fitCopula}}.}
 }
 \details{
 %    \describe{
@@ -41,7 +41,11 @@ Bianchi, G. Di Lascio, F.M.L. Giannerini, S. Manzari, A. Reale, A. and Ruocco, G
 F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 
 Simone Giannerini <simone.giannerini@unibo.it>}
-
+\seealso{
+    \code{\link{CoImp}},
+    \code{\link{NPCoImp}},
+    \code{\link[copula]{fitCopula}}.
+}
 \examples{
 
 # generate data from a 4-variate Gumbel copula with different margins

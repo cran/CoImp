@@ -1,0 +1,30 @@
+citHeader("To cite the CoImp package in publications use:")
+
+bibentry(bibtype="Manual",
+         title ="CoImp: Parametric and Non-Parametric Copula-Based Imputation Methods",
+         author = as.person("F. Marta L. Di Lascio [aut], Aurora Gatto [aut]"), 
+         organization = " Free University of Bozen-Bolzano",        
+         address      = " Bozen-Bolzano, Italy",
+         year         = 2024,
+         note         = "R package version 2.0.1",
+         url          = "https://CRAN.R-project.org/package=CoImp",
+         textVersion =  
+         paste("Di Lascio. F.M.L., Gatto A. (2024) ", 
+               "CoImp: Parametric and Non-Parametric Copula-Based Imputation Methods, ",
+               "Free University of Bozen-Bolzano, Italy ",
+                "https://CRAN.R-project.org/package=CoImp",
+                " Version = 2.0.1",".",sep="") )
+               
+bibentry(bibtype="Article",
+         title ="A non-parametric conditional copula-based imputation method",
+         author = as.person("F. Marta L. Di Lascio [aut], Aurora Gatto [aut]"),        
+         year   = 2024,
+         journal = "Under review.",
+         note   = "This study has been carried out within the Agritech National Research Center and received funding from the European Union - 
+         Next Generation EU (Piano Nazionale di Ripresa e Resilienza (PNRR) - Missione 4 Componente 2, Investimento 1.4 - D.D. 1032 17/06/2022, CN00000022.
+         Spoke 4, Task 4.2.3). ",
+         textVersion =  
+         paste("Di Lascio. F.M.L., Gatto A. (202x) ", 
+               "A non-parametric conditional copula-based imputation method. ",
+               "Under review.") )
+                

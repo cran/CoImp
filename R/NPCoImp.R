@@ -110,7 +110,7 @@ NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), K=7, method="gower", N=1000, 
       cec[i] <- condEmpCop(nan,x.complete,j.cond)
     }
     if(all(cec==0)){
-      print("cec is flat!!!")
+      print("The empirical conditional copula is flat.")
       h <- h+1
       X.imp[miss,]  <- x.miss[miss,] 
       alpha_fin <- 0
@@ -119,11 +119,11 @@ NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), K=7, method="gower", N=1000, 
       col.cec <- length(j.na)+1
       fin.ord <- fin[order(fin[,col.cec]),]
       cec.ord <- fin.ord[,col.cec]
-      if(sum(cec.ord>=0.5)==0){          
-        print("No Fu>=0.5")
+      if(sum(cec>0.5)==0 | sum(cec<0.5)==0){         
+        print("No Fu>0.5 or Fu<0.5")
         Falpha <- ncol(u.)  
         u.imp <- fin.ord[Falpha,-col.cec] 
-        alpha_fin <- fin.ord[Falpha,col.cec]
+        alpha_fin <- fin.ord[Falpha,col.cec] # max values of the computed values of cec
       }else{
         Falpha1 <- vector(length=lPsi) 
         Falpha2 <- vector(length=lPsi) 

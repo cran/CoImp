@@ -23,7 +23,7 @@ PerfMeasure(db.complete, db.imputed, db.missing, n.marg = 2, model =
   \item{model}{a list of copula models to be used for the imputation. See the Details section.
         This should be one of \code{normal} and \code{t} (with \code{dispstr} as in the \code{copula} package), \code{frank}, \code{clayton}, \code{gumbel}, and \code{rotated copulas}.
         As in \code{fitCopula}, itau fitting coerced tCopula to 'df.fixed=TRUE'.}
-  \item{\dots}{further parameters for \code{\link{fitCopula}}.}
+  \item{\dots}{further parameters for \code{\link[copula]{fitCopula}}.}
 }
 \details{
 %%    \describe{
@@ -45,7 +45,7 @@ PerfMeasure(db.complete, db.imputed, db.missing, n.marg = 2, model =
     \item{RRMSE}{Object of class \code{"numeric"}. The relative root mean squared error of the estimator for the dependence parameter.}
     %\item{MS}{Object of class \code{"numeric"}. The average difference (on the replications performed) between the dependence of
     %the imputed variables and that of the complete ones computed in terms of \code{\link{Srho.ts}}.}
-    \item{TID}{Object of class \code{"vector"}. Upper and lower tail dependence indexes for bivariate copulas. Original function is in \code{\link{tailIndex}}.}
+    \item{TID}{Object of class \code{"vector"}. Upper and lower tail dependence indexes for bivariate copulas. Original function is in \code{\link[copula]{tailIndex}}.}
 }
 
 \references{
@@ -60,7 +60,12 @@ Bianchi, G. Di Lascio, F.M.L. Giannerini, S. Manzari, A. Reale, A. and Ruocco, G
 F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 
 Simone Giannerini <simone.giannerini@unibo.it>}
-
+\seealso{
+    \code{\link{CoImp}},
+    \code{\link{NPCoImp}},
+    \code{\link{MCAR}},
+    \code{\link{MAR}}.
+}
 \examples{
 \dontrun{
 # generate data from a 4-variate Gumbel copula with different margins

@@ -16,7 +16,7 @@
         \item{\code{RRMSE}:}{Object of class \code{"numeric"}. The relative root mean squared error of the estimator for the dependence parameter.}
         %\item{\code{MS}:}{Object of class \code{"numeric"}. The average difference (on the replications performed) between the dependence of
         %    the imputed variables and that of the complete ones computed in terms of \code{\link{Srho.ts}}.}
-        \item{\code{TID}:}{Object of class \code{"vector"}. Upper and lower tail dependence indexes for bivariate copulas. Original function is in \code{\link{tailIndex}}.}
+        \item{\code{TID}:}{Object of class \code{"vector"}. Upper and lower tail dependence indexes for bivariate copulas. Original function is in \code{\link[copula]{tailIndex}}.}
     }
 }
 
@@ -38,9 +38,11 @@ Bianchi, G. Di Lascio, F.M.L. Giannerini, S. Manzari, A. Reale, A. and Ruocco, G
 F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 Simone Giannerini <simone.giannerini@unibo.it>
 }
-
 \seealso{
-    See Also \code{\link{CoImp}}, \code{\link{lp}} and \code{\linkS4class{copula}}.
+    \code{\link{CoImp}},
+    \code{\link{NPCoImp}},
+    \code{\link{MCAR}},
+    \code{\link{MAR}}.
 }
 \examples{
 showClass("PerfMeasure")

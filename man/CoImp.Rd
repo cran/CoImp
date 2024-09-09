@@ -25,13 +25,13 @@ CoImp(X, n.marg = ncol(X), x.up = NULL, x.lo = NULL, q.up = rep(0.85, n.marg),
   \item{q.up}{a numeric vector of length n.marg with the probability of the quantile used to define x.up for each margin. Specify either x.up xor q.up.}
   \item{q.lo}{a numeric vector of length n.marg with the probability of the quantile used to define x.lo for each margin. Specify either x.lo xor q.lo.}   
   \item{type.data}{the nature of the variables in X: \code{discrete} or \code{continuous}.}
-  \item{smoothing}{values for the nearest neighbour component of the smoothing parameter of the \code{lp} function.}
+  \item{smoothing}{values for the nearest neighbour component of the smoothing parameter of the \code{\link[locfit]{lp}} function.}
   \item{plot}{logical: if \code{TRUE} plots the estimated marginal densities and a bar plot of the percentages of missing and available data for each margin.}  
   \item{model}{a list of copula models to be used for the imputation, see the Details section.
         This should be one of \code{normal} and \code{t} (with \code{dispstr} as in the \code{copula} package), \code{frank}, \code{clayton}, \code{gumbel}, and \code{rotated copulas}.
-        As in \code{fitCopula}, itau fitting coerced tCopula to 'df.fixed=TRUE'.}
+        As in \code{\link[copula]{fitCopula}}, itau fitting coerced tCopula to 'df.fixed=TRUE'.}
   \item{start.}{a numeric vector of starting values for the parameter optimization via \code{\link{optim}}.}
-  \item{\dots}{further parameters for \code{\link{fitCopula}}, \code{\link{lp}} and further graphical arguments.}
+  \item{\dots}{further parameters for \code{\link[copula]{fitCopula}}, \code{\link[locfit]{lp}} and further graphical arguments.}
 }
 \details{
     CoImp is an imputation method based on conditional copula functions that allows to impute missing observations according to the multivariate dependence structure of the generating process without any assumptions on the margins. This method can be used independently from the dimension and the kind (monotone or non monotone) of the missing patterns.
@@ -69,7 +69,13 @@ Bianchi, G. Di Lascio, F.M.L. Giannerini, S. Manzari, A. Reale, A. and Ruocco, G
 F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 Simone Giannerini <simone.giannerini@unibo.it>
 }
-
+\seealso{
+    \code{\link{NPCoImp}},
+    \code{\link{MCAR}},
+    \code{\link{MAR}},
+    \code{\link[copula]{fitCopula}},
+    \code{\link[locfit]{lp}}.
+}
 \examples{
 
 ## generate data from a 4-variate Frank copula with different margins

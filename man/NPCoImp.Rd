@@ -14,13 +14,13 @@ NPCoImp(X, Psi=seq(0.05,0.45,by=0.05), K=7, method="gower", N=1000, seed=set.see
   \item{K}{the number of data matrix rows more similar to the missing one that are used for the imputation.}
   \item{method}{the distance measure used for the imputation, among Euclidean, Manhattan, Canberra, Gower, and two based on the Kendall-correlation coefficient (see below for details).}  
   \item{N}{the number of uniform numbers to numerically construct the empirical conditional copula.}
-  \item{seed}{the set.seed for the numerical inversion Monte Carlo method used for constructing the empirical conditional copula.}
+  \item{seed}{the set.seed for the numerical construction of the empirical conditional copula.}
 }
 \details{
-    NPCoImp is a non-parametric imputation method based on the empirical conditional copula function and the numerical inversion Monte Carlo method. To choose the best quantile for the imputation it assesses the (a)symmetry of the empirical conditional copula and it uses the K pseudo-observations more similar to the missing one. The NPCoImp allows the imputation of missing observations according to the multivariate dependence structure of the data generating process without any assumptions on the margins. This method can be used independently from the dimension and the kind (monotone or non monotone) of the missing patterns. 
+    NPCoImp is a non-parametric imputation method based on the empirical conditional copula function. To choose the best quantile for the imputation it assesses the (a)symmetry of the empirical conditional copula and it uses the K pseudo-observations more similar to the missing one. The NPCoImp allows the imputation of missing observations according to the multivariate dependence structure of the data generating process without any assumptions on the margins. This method can be used independently from the dimension and the kind (monotone or non monotone) of the missing patterns. 
     Brief description of the approach:
    \enumerate{
-    \item numerically reconstruct the empirical conditional copula of the missing observation(s); 
+    \item reconstruct numerically the empirical conditional copula of the missing observation(s); 
     \item evaluate the (a)symmetry of the empirical conditional copula around 0.5. Inspired by Patil et al. (2012), we compute C(0.5-Psi|available obs)-( 1 - C(0.5+Psi|available obs)) where Psi in ]0,0.5[ and say that C(.|available obs) is symmetric (negative asymmetric or positive asymmetric) if the above equation is null (positive or negative, respectively);
     \item select the quantile of the empirical conditional copula on the basis of its (a)symmetry. Therefore:
     \itemize{
@@ -34,20 +34,23 @@ NPCoImp(X, Psi=seq(0.05,0.45,by=0.05), K=7, method="gower", N=1000, seed=set.see
 }
 \value{An object of S4 class "NPCoImp", which is a list with the following elements:
      \item{Imputed.matrix}{the imputed data matrix.}
-     \item{Selected.alpha}{the selected alpha values. The best quantile for the imputation.}
+     \item{Selected.alpha}{the order alpha of each quantile used for the imputation.}
      \item{numFlat}{the number of possible flat empirical conditional copulas, i.e. when ecc is always zero.}
 }
 
 \references{
-Di Lascio, F.M.L, Gatto A. (202x) "A non-parametric conditional copula-based imputation method". Working paper.
+Di Lascio, F.M.L, Gatto A. (202x) "A non-parametric conditional copula-based imputation method". Under review.
 }
 
 \author{
 F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 Aurora Gatto <aurora.gatto@unibz.it>
 }
-
-
+\seealso{
+    \code{\link{CoImp}},
+    \code{\link{MCAR}},
+    \code{\link{MAR}}.
+}
 \examples{
 ## generate data from a 4-variate Frank copula with different margins
 
@@ -62,13 +65,14 @@ x.samp <- copula::rMvdc(n, mymvdc)
 
 # randomly introduce univariate and multivariate missing
 
-perc.mis    <- 0.3
-set.seed(11)
+perc.mis    <- 0.25
+set.seed(14)
 miss.row    <- sample(1:n, perc.mis*n, replace=TRUE)
 miss.col    <- sample(1:n.marg, perc.mis*n, replace=TRUE)
 miss        <- cbind(miss.row,miss.col)
 x.samp.miss <- replace(x.samp,miss,NA)
-probs <- seq(0.05,0.45,by=0.05)
+x.samp.miss
+probs <- seq(0.05,0.45,by=0.1)
 ndist <- 7
 dist.meth <- "gower"  
 
