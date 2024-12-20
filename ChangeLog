@@ -1,4 +1,9 @@
-﻿2.0-1 
+﻿2.0-2
+    - introduced the possibility to select the type of empirical copula to be used (default is the beta)
+    - deleted the numerical computation of the cec in N values
+    - deleted the seed argument
+    
+2.0-1 
     - correct the value for 'Selected.alpha' in the documentation of the NPCoImp
     - modify an error message
     - update references

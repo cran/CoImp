@@ -11,8 +11,8 @@ Objects can be created by calls of the form \code{new("NPCoImp", ...)}.
 \section{Slots}{
      \describe{
     \item{\code{Imputed.matrix}}{Object of class \code{"matrix"}. The imputed data matrix.}
-    \item{\code{Selected.alpha}}{Object of class \code{"vector"}. The order of the quantiles selected for the imputation.}
-    \item{\code{numFlat}}{Object of class \code{"numeric"}. The number of possible flat empirical conditional copulas, i.e. when the fucntion cannot be empirically reconstruct.}
+    \item{\code{Selected.quantile.alpha}}{Object of class \code{"vector"}. The quantile selected for the imputation and its order alpha.}
+    \item{\code{numFlat}}{Object of class \code{"numeric"}. The number of possible flat empirical conditional copulas, i.e. when the function cannot be empirically estimated.}
 }
 }
 \section{Methods}{

@@ -2,7 +2,7 @@
 # CONDITIONAL EMPIRICAL COPULA FUNCTION     
 #                                                           
 # INPUT: evaluation points of the empirical copula, complete sample data matrix, 
-#        vector of indices of conditioning variables 
+#        vector of indices of conditioning variables, kind of empirical copula
 #
 ### NPCoImp
 ### A NON PARAMETRIC COPULA BASED IMPUTATION METHOD
@@ -31,7 +31,7 @@
 ##  http://www.r-project.org/Licenses/
 
 
-condEmpCop <- function(u, X, j.cond){
+condEmpCop <- function(u, X, j.cond, smoothing){
   # u evaluation points of the empirical copula
   # X complete sample data (if pobs(X) is given in input, nothing changes since C.n
   #     calls F.n that applies pobs and apply twice pobs do not determing anythings)
@@ -46,10 +46,10 @@ condEmpCop <- function(u, X, j.cond){
   if(length(u)!=n.marg) stop("'X' and u have incompatible dimensions")
   if(length(j.cond)>=n.marg) stop("'X' and 'j.cond' have incompatible dimensions")
   if(length(j.cond)==1){
-    res <- C.n(u,X=X)/u[j.cond]
+    res <- C.n(u,X=X, smoothing=smoothing)/u[j.cond]
   }else{
-    num <- C.n(u,X=X)
-    den <- C.n(u[j.cond],X=X[,j.cond])
+    num <- C.n(u,X=X, smoothing=smoothing)
+    den <- C.n(u[j.cond],X=X[,j.cond], smoothing=smoothing)
     if(num==0 & den==0){
       rum <- runif(1, 0, 0.000001)
       res <- (num+rum)/(den+rum)

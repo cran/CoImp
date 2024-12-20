@@ -1,12 +1,10 @@
-#############################################################
-# ALGORITMO DI IMPUTAZIONE DATI MAR VIA FUNZIONE COPULA     #
-#                                                           #
-# INPUT:data matrix, vector of probabilities, K records more #
-#similar to the missing one, distance measure,    #
-#number of uniform numbers to numerically construct the empirical conditional #
-#copula, set.seed for reproducibility  ###
-
-
+#####################################################################
+# ALGORITHM OF THE NON PARAMETRIC COPULA BASED IMPUTATION METHOD    
+#                                                           
+# INPUT: data matrix, vector of probabilities, K records to be selected for the
+#        imputation, distance measure, kind of empirical copula function 
+#
+#
 ### NPCoImp
 ### A NON PARAMETRIC COPULA BASED IMPUTATION METHOD
 ##
@@ -37,11 +35,11 @@
 
 setClass("NPCoImp",
          representation(Imputed.matrix  = "matrix"
-                        ,Selected.alpha  = "vector"
+                        ,Selected.quantile.alpha  = "vector"
                         ,numFlat      = "numeric"
                         ),
          prototype = list(Imputed.matrix = matrix(0,0,0)
-                        ,Selected.alpha = vector()
+                        ,Selected.quantile.alpha = vector()
                         ,numFlat    = numeric()
                         )
          )
@@ -58,8 +56,8 @@ setMethod(
         cat (" Imputed data matrix : \n")
         print(out@"Imputed.matrix")
         cat (" -------------------------------------------------------------------------- \n")
-        cat (" Best quantile for the imputation : \n")
-        print(out@"Selected.alpha")
+        cat (" Best quantile for the imputation and the corresponding alpha: \n")
+        print(out@"Selected.quantile.alpha")
         cat (" -------------------------------------------------------------------------- \n")
         cat ("Number of flat conditional empirical copulas : \n")
         print(out@"numFlat")
@@ -69,7 +67,7 @@ setMethod(
 
 ## ***************************************************************************************************
 
-NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), K=7, method="gower", N=1000, seed=set.seed(7)){
+NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), smoothing="beta", K=7, method="gower"){
   if(is.matrix(X)==FALSE){stop("Please, provide a matrix data object in input")}
   if(length(Psi)<1){stop("Please, provide at least one value for Psi")}
   if(max(Psi)>=0.5){stop("The (a)symmetry is investigated around 0.5, thus Psi should be less than 0.5")} 
@@ -80,7 +78,7 @@ NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), K=7, method="gower", N=1000, 
     cat("Note that K has been rounded since the provided value is not integer.","\n")
   }
   if(K==0){stop("Please, provide a value different from zero for K")}
-  if(N<500){cat("Note that the conditional empirical copula is poorly estimated. To improve the estimation use a larger N.","\n")}
+  if(length(Psi)<9){cat("Note that the imputation through the conditional empirical beta copula could be poorly accurate. To improve it use a larger Psi.","\n")}
   #
   lPsi <- length(Psi)
   x.miss <- X
@@ -90,90 +88,98 @@ NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), K=7, method="gower", N=1000, 
   x.complete <- x.miss[ind.complete,]
   X.imp <- x.miss
   #     
-  cat("It is thinking.. - Do you remember Commodor 64?","\n")
+  cec.alpha <- vector()
+  qfin      <- vector()
   #
   h <- 0
   alpha <- vector(length=length(r.miss)) 
   for(m in 1:length(r.miss)){
-    miss  <- r.miss[m] 
-    x.na    <- x.miss[miss,]
-    j.cond <- which(!is.na(x.na))
-    j.na     <- which(is.na(x.na))
-    u.na    <- u.miss[miss,]
-    set.seed(seed)
-    u.        <- replicate(N, runif(length(j.na)))
-    if(length(j.na)==1){u.<- t(u.)}
-    cec      <- vector()
-    for(i in 1:ncol(u.)){
-      nan <- u.na
-      nan[which(is.na(u.na))] <- u.[,i]
-      cec[i] <- condEmpCop(nan,x.complete,j.cond)
-    }
-    if(all(cec==0)){
-      print("The empirical conditional copula is flat.")
-      h <- h+1
-      X.imp[miss,]  <- x.miss[miss,] 
-      alpha_fin <- 0
-    }else{
-      fin <- cbind(t(u.),cec)
-      col.cec <- length(j.na)+1
-      fin.ord <- fin[order(fin[,col.cec]),]
-      cec.ord <- fin.ord[,col.cec]
-      if(sum(cec>0.5)==0 | sum(cec<0.5)==0){         
-        print("No Fu>0.5 or Fu<0.5")
-        Falpha <- ncol(u.)  
-        u.imp <- fin.ord[Falpha,-col.cec] 
-        alpha_fin <- fin.ord[Falpha,col.cec] # max values of the computed values of cec
-      }else{
-        Falpha1 <- vector(length=lPsi) 
-        Falpha2 <- vector(length=lPsi) 
-        for(i in 1: lPsi){
-          Falpha1[i] <- cec.ord[which(cec.ord>=(0.5-Psi[i]))[1]]
-          Falpha2[i] <- cec.ord[which(cec.ord>=(0.5+Psi[i]))[1]]
-        }
-        cec_diff <- round((Falpha1-(1-Falpha2)),2)
-        cec_diff <- cec_diff[which(!is.na(cec_diff))]
-        lcecdiff <- length(cec_diff)
-        if(sum(cec_diff)==0){
-          alpha_fin <- 0.5
-          u.imp <- fin.ord[which(cec.ord>=alpha_fin)[1],-col.cec] 
-        }else{
-          if(sum(cec_diff)>0){ 
-            alpha_fin <- (0.5-Psi)[which((cec_diff==max(cec_diff)))[1]]
-            u.imp <- mean(fin.ord[which(fin.ord[,col.cec]==fin.ord[which((cec.ord>=alpha_fin))[1],col.cec]),-col.cec]) 
-          }else{
-            if(sum(cec_diff)<0){ 
-              alpha_fin <- (0.5+Psi)[which((abs(cec_diff)==max(abs(cec_diff))))[1]]
-              u.imp <-  mean(fin.ord[which(fin.ord[,col.cec]==fin.ord[which((cec.ord>=alpha_fin))[1],col.cec]),-col.cec])  # quantile alpha_fin
-            }
-          }
-        }
+      miss  <- r.miss[m] 
+      x.na    <- x.miss[miss,]
+      j.cond <- which(!is.na(x.na))
+      j.na     <- which(is.na(x.na))
+      u.na    <- u.miss[miss,]    
+      cecL   <- vector()
+      cecU   <- vector()
+      for(j in 1:lPsi){       
+          nanL <- u.na
+          nanL[j.na] <- rep(0.5-Psi[j], length(j.na))
+          nanU <- u.na
+          nanU[j.na] <- rep(0.5+Psi[j], length(j.na))
+          cecL[j] <- condEmpCop(nanL,x.complete,j.cond,smoothing=smoothing)
+          cecU[j] <- condEmpCop(nanU,x.complete,j.cond,smoothing=smoothing) 
       }
-      u.na[j.na] <- u.imp      
-      if(method=="gower"){
-        distances <- as.matrix(daisy(rbind(u.na, u.miss[-r.miss,]), metric=method))[-1, 1] 
+      cecASY <- c(cecL,cecU) 
+      if(all(cecASY==0)){ 
+          print("It is not possible to assess the (a)symmetry since the empirical conditional copula is equal to zero in the considered values. Hence, it is not possible to impute.")
+          h <- h+1
+          X.imp[miss,]  <- x.miss[miss,] 
+          q_fin <- cec_alpha <- u.imp <- NA
       }else{
-        if(method=="kendall"){
-          distances <- as.matrix(as.dist(sqrt(1-cor(t(rbind(u.na, u.miss[-r.miss,])),method=method)^2)))[-1, 1] 
-        }else{
-          if(method=="kendall2"){
-            distances <- as.matrix(as.dist(1-abs(cor(t(rbind(u.na, u.miss[-r.miss,])),method="kendall"))))[-1, 1] 
+          if(sum(cecASY>0.5)==0){      
+              print("No C(u)>0.5") 
+              q_fin <- (0.5-Psi)[which((cecASY==max(cecASY)))[1]]
+              cec_alpha <- max(cecASY)
+              u.imp <- q_fin
           }else{
-            distances <- as.matrix(dist(rbind(u.na, u.miss[-r.miss,]), method=method))[-1, 1] 
+              if(sum(cecASY<0.5)==0){  
+                  print("No C(u)<0.5") 
+                  q_fin <- (0.5+Psi)[which((cecASY==min(cecASY)))[1]]
+                  cec_alpha <- min(cecASY)
+                  u.imp <- q_fin
+              }else{
+                  cec_diff <- round(cecL-(1-cecU),2) 
+                  cec_diff <- cec_diff[which(!is.na(cec_diff))]
+                  lcecdiff <- length(cec_diff)
+                  if(sum(cec_diff)==0){
+                      q_fin <- 0.5 
+                      cec_alpha <- 0.5
+                      u.imp <- q_fin
+                  }else{
+                      if(sum(cec_diff)>0){ 
+                          q_fin <- (0.5-Psi)[which((cec_diff==max(cec_diff)))[1]] 
+                          nan <- u.na
+                          nan[which(is.na(u.na))] <- q_fin 
+                          cec_alpha <- condEmpCop(nan,x.complete,j.cond,smoothing=smoothing) 
+                          u.imp <- q_fin
+                      }else{
+                          if(sum(cec_diff)<0){ 
+                              q_fin <- (0.5+Psi)[which((abs(cec_diff)==max(abs(cec_diff))))[1]] 
+                              nan <- u.na
+                              nan[which(is.na(u.na))] <- q_fin 
+                              cec_alpha <- condEmpCop(nan,x.complete,j.cond,smoothing=smoothing)
+                              u.imp <- q_fin            
+                          }
+                      }
+                  }
+              }
           }
-        }   
+          u.na[j.na] <- u.imp      
+          if(method=="gower"){
+              distances <- as.matrix(daisy(rbind(u.na, u.miss[-r.miss,]), metric=method))[-1, 1] 
+          }else{
+              if(method=="kendall"){
+                  distances <- as.matrix(as.dist(sqrt(1-cor(t(rbind(u.na, u.miss[-r.miss,])),method=method)^2)))[-1, 1] 
+              }else{
+                  if(method=="kendall2"){
+                      distances <- as.matrix(as.dist(1-abs(cor(t(rbind(u.na, u.miss[-r.miss,])),method="kendall"))))[-1, 1] 
+                  }else{
+                      distances <- as.matrix(dist(rbind(u.na, u.miss[-r.miss,]), method=method))[-1, 1] 
+                  }
+              }
+          }
+          smallest_indices <- order(distances)[1:K] 
+          w_miss <-   x.complete[smallest_indices, ] 
+          x.na[j.na] <- colMeans(w_miss)[j.na]  
+          x.imp <- x.na
+          X.imp[miss,]  <- x.imp
+          cec.alpha[m] <- cec_alpha
+          qfin[m] <- q_fin            
       }
-      smallest_indices <- order(distances)[1:K] 
-      w_miss <-   x.complete[smallest_indices, ] 
-      x.na[j.na] <- colMeans(w_miss)[j.na]  
-      x.imp <- x.na
-      X.imp[miss,]  <- x.imp
-    }
-    alpha[m] <- alpha_fin
   }
-    out <- new("NPCoImp")
-    out@Imputed.matrix   <- X.imp;
-    out@Selected.alpha  <- alpha;
-    out@numFlat   <- h;
-    return(out);    
+  out <- new("NPCoImp")
+  out@Imputed.matrix <- X.imp;
+  out@Selected.quantile.alpha <- cbind(qfin, cec.alpha);
+  out@numFlat <- h;
+  return(out);
 }
