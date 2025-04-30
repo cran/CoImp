@@ -1,7 +1,7 @@
 \name{NPCoImp}
 \alias{NPCoImp}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Non-Parametric Copula-Based Imputation Method}
+\title{Nonparametric Copula-Based Imputation Method}
 \description{
     Imputation method based on empirical conditional copula functions.
 }
@@ -10,35 +10,31 @@ NPCoImp(X, Psi=seq(0.05,0.45,by=0.05), smoothing="beta", K=7, method="gower")
 } 
 \arguments{
   \item{X}{a data matrix with missing values. Missing values should be denoted with \code{NA}.}
-  \item{Psi}{vector of probabilities to assess the symmetry/asymmetry of the empirical conditional copula (ecc) function and find the best quantile for the imputation (see below for details).}
+  \item{Psi}{vector of probabilities to evaluate the radial symmetry/asymmetry of the conditional empirical copula function and find the best lower-orthant quantile for the imputation (see below for details).}
   \item{smoothing}{the character string specifying the type of smoothing of the empirical copula. Default is "beta" (empirical beta copula) but also "none" (the original empirical copula) can be used.}
   \item{K}{the number of data matrix rows more similar to the missing one that are used for the imputation.}
   \item{method}{the distance measure used for the imputation, among Euclidean, Manhattan, Canberra, Gower, and two based on the Kendall-correlation coefficient (see below for details).}  
 }
 \details{
-    NPCoImp is a non-parametric imputation method based on the empirical conditional copula function. To choose the best quantile for the imputation it assesses the (a)symmetry of the empirical conditional copula and it uses the K pseudo-observations more similar to the missing one. The NPCoImp allows the imputation of missing observations according to the multivariate dependence structure of the data generating process without any assumptions on the margins. This method can be used independently from the dimension and the kind (monotone or non monotone) of the missing patterns. 
+    NPCoImp is a nonparametric imputation method based on the conditional empirical copula function. To choose the best lower-orthant quantile for the imputation it evaluates the radial (a)symmetry of the conditional empirical copula and it uses the K pseudo-observations more similar to the missing one. The NPCoImp allows the imputation of missing observations according to the multivariate dependence structure of the data generating process without any assumptions on the margins. This method can be used independently from the dimension and the kind (monotone or non monotone) of the missing patterns. 
     Brief description of the approach:
    \enumerate{
-    \item estimate the empirical (beta) conditional copula of the missing observation(s) given the available ones; 
-    \item evaluate the (a)symmetry of the empirical conditional copula around 0.5 (see the paper in the references for details); 
-    \item select the quantile of the empirical conditional copula on the basis of its (a)symmetry. Therefore:
-    \itemize{
-    \item symmetry: we impute through the median of the empirical conditional copula; 
-    \item negative asymmetry: we impute with a quantile on the left tail of the ecc (see the paper in the references for details);
-    \item positive asymmetry: we impute with a quantile on the right tail of the ecc (see the paper in the references for details);
-    }
+    \item estimate the conditional empirical (beta) copula of the missing observation(s) given the available ones; 
+    \item evaluate the radial (a)symmetry of the conditional empirical copula around 0.5 (see the paper in the references for details); 
+    \item select the lower-orthant quantile of the conditional empirical copula on the basis of its radial (a)symmetry (see the paper in the references for details);
     \item select the K pseudo-observations closest to the imputed one and the corresponding original observations;
-    \item impute missing values by replacing them from the average of the original observations derived at the previous step.
+    \item impute missing values by replacing them from the average of the original observations derived at the previous step;
+    \item calculate the conditional probability of the lower-orthant quantile used for imputing.
     }
 }
 \value{An object of S4 class "NPCoImp", which is a list with the following elements:
      \item{Imputed.matrix}{the imputed data matrix.}
-     \item{Selected.quantile.alpha}{the quantile selected for the imputation and its order alpha.}
-     \item{numFlat}{the number of possible flat empirical conditional copulas, i.e. when ecc is always zero.}
+     \item{Selected.alpha}{the (conditional) probability of the lower-orthant quantile selected for the imputation.}
+     \item{numFlat}{the number of possible flat conditional empirical copulas, i.e. when the copula is always zero.}
 }
 
 \references{
-Di Lascio, F.M.L, Gatto A. (202x) "A non-parametric conditional copula-based imputation method". Under review.
+Di Lascio, F.M.L, Gatto A. (202x) "A nonparametric conditional copula-based imputation method". Under review.
 }
 
 \author{
@@ -46,9 +42,9 @@ F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 Aurora Gatto <aurora.gatto@unibz.it>
 }
 \seealso{
-    \code{\link{CoImp}},
-    \code{\link{MCAR}},
-    \code{\link{MAR}}.
+    \code{\link[CoImp]{CoImp}},
+    \code{\link[CoImp]{MCAR}},
+    \code{\link[CoImp]{MAR}}.
 }
 \examples{
 ## generate data from a 4-variate Frank copula with different margins

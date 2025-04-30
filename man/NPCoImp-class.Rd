@@ -11,8 +11,8 @@ Objects can be created by calls of the form \code{new("NPCoImp", ...)}.
 \section{Slots}{
      \describe{
     \item{\code{Imputed.matrix}}{Object of class \code{"matrix"}. The imputed data matrix.}
-    \item{\code{Selected.quantile.alpha}}{Object of class \code{"vector"}. The quantile selected for the imputation and its order alpha.}
-    \item{\code{numFlat}}{Object of class \code{"numeric"}. The number of possible flat empirical conditional copulas, i.e. when the function cannot be empirically estimated.}
+    \item{\code{Selected.alpha}}{Object of class \code{"vector"}. The (conditional) probaiblity of the lower-orthant quantile selected for the imputation.}
+    \item{\code{numFlat}}{Object of class \code{"numeric"}. The number of possible flat conditional empirical copulas, i.e. when the function cannot be empirically estimated.}
 }
 }
 \section{Methods}{
@@ -21,16 +21,16 @@ Objects can be created by calls of the form \code{new("NPCoImp", ...)}.
 	 }
 }
 \references{
-Di Lascio, F.M.L, Gatto A. (202x) "A non-parametric conditional copula-based imputation method". Under review.
+Di Lascio, F.M.L, Gatto A. (202x) "A nonparametric conditional copula-based imputation method". Under review.
 }
 \author{
 F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 Aurora Gatto <aurora.gatto@unibz.it>
 }
 \seealso{
-    \code{\link{CoImp}},  
-    \code{\link{MCAR}},
-    \code{\link{MAR}}.
+    \code{\link[CoImp]{CoImp}},  
+    \code{\link[CoImp]{MCAR}},
+    \code{\link[CoImp]{MAR}}.
 }
 \examples{
 showClass("NPCoImp")

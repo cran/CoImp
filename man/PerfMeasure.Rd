@@ -26,15 +26,6 @@ PerfMeasure(db.complete, db.imputed, db.missing, n.marg = 2, model =
   \item{\dots}{further parameters for \code{\link[copula]{fitCopula}}.}
 }
 \details{
-%%    \describe{
-%%    \item{Usage for continuous variables:}{.\cr
-%%    \code{PerfMeasure(db.complete, db.imputed, db.missing, n.marg = 2, 
-%%      model = list(normalCopula(0.5, dim=n.marg),  
- %%    claytonCopula(10, dim=n.marg), gumbelCopula(10, dim=n.marg), 
-%%     frankCopula(10, dim=n.marg), tCopula(0.5, dim=n.marg,...),
-%%    rotCopula(claytonCopula(10,dim=n.marg),flip=rep(TRUE,n.marg)),...))}}
-%%    }
-
     PerfMeasure computes some measures useful for evaluating the goodness of the used imputation method.
     PerfMeasure requires in input the imputed, the complete and the missing data matrix and gives in output
     five different measures of performance. See below for details
@@ -43,8 +34,6 @@ PerfMeasure(db.complete, db.imputed, db.missing, n.marg = 2, model =
     \item{\code{MARE}}{Object of class \code{"numeric"}. The mean (on the replications performed) of the absolute relative error between the imputed and the corresponding original value.}
     \item{RB}{Object of class \code{"numeric"}. The relative bias of the estimator for the dependence parameter.}
     \item{RRMSE}{Object of class \code{"numeric"}. The relative root mean squared error of the estimator for the dependence parameter.}
-    %\item{MS}{Object of class \code{"numeric"}. The average difference (on the replications performed) between the dependence of
-    %the imputed variables and that of the complete ones computed in terms of \code{\link{Srho.ts}}.}
     \item{TID}{Object of class \code{"vector"}. Upper and lower tail dependence indexes for bivariate copulas. Original function is in \code{\link[copula]{tailIndex}}.}
 }
 
@@ -61,10 +50,10 @@ F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 
 Simone Giannerini <simone.giannerini@unibo.it>}
 \seealso{
-    \code{\link{CoImp}},
-    \code{\link{NPCoImp}},
-    \code{\link{MCAR}},
-    \code{\link{MAR}}.
+    \code{\link[CoImp]{CoImp}},
+    \code{\link[CoImp]{NPCoImp}},
+    \code{\link[CoImp]{MCAR}},
+    \code{\link[CoImp]{MAR}}.
 }
 \examples{
 \dontrun{

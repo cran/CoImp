@@ -70,9 +70,9 @@ F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 Simone Giannerini <simone.giannerini@unibo.it>
 }
 \seealso{
-    \code{\link{NPCoImp}},
-    \code{\link{MCAR}},
-    \code{\link{MAR}},
+    \code{\link[CoImp]{NPCoImp}},
+    \code{\link[CoImp]{MCAR}},
+    \code{\link[CoImp]{MAR}},
     \code{\link[copula]{fitCopula}},
     \code{\link[locfit]{lp}}.
 }

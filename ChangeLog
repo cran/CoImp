@@ -1,4 +1,10 @@
-﻿2.0-2
+﻿2.1-0
+    - added two internal functions "EmpSCop" and "condEmpSCop"
+    - improved the criterion to assess the radial symmetry and the asymmetry of the conditional empirical copula
+    - corrected the calculation of alpha
+    - deleted some unuseful checks in "NPCoImp"
+    
+2.0-2
     - introduced the possibility to select the type of empirical copula to be used (default is the beta)
     - deleted the numerical computation of the cec in N values
     - deleted the seed argument

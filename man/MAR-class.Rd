@@ -34,8 +34,8 @@ F. Marta L. Di Lascio <marta.dilascio@unibz.it>,
 Simone Giannerini <simone.giannerini@unibo.it>
 }
 \seealso{
-    \code{\link{CoImp}},
-    \code{\link{NPCoImp}}.
+    \code{\link[CoImp]{CoImp}}, 
+    \code{\link[CoImp]{NPCoImp}}.
 }
 \examples{
 showClass("MAR")

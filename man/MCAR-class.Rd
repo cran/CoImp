@@ -33,8 +33,8 @@ Bianchi, G. Di Lascio, F.M.L. Giannerini, S. Manzari, A. Reale, A. and Ruocco, G
 Simone Giannerini <simone.giannerini@unibo.it>}
 
 \seealso{
-    \code{\link{CoImp}},
-    \code{\link{NPCoImp}}.
+    \code{\link[CoImp]{CoImp}},
+    \code{\link[CoImp]{NPCoImp}}.
 }
 \examples{
 showClass("MCAR")
