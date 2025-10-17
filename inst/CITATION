@@ -16,7 +16,7 @@ bibentry(bibtype="Manual",
                 " Version = 2.1.0",".",sep="") )
                
 bibentry(bibtype="Article",
-         title ="A nonparametric conditional copula-based imputation method",
+         title ="A nonparametric copula-based imputation method",
          author = as.person("F. Marta L. Di Lascio [aut], Aurora Gatto [aut]"),        
          year   = 2025,
          journal = "Under review.",
@@ -25,6 +25,6 @@ bibentry(bibtype="Article",
          Spoke 4, Task 4.2.3). ",
          textVersion =  
          paste("Di Lascio F.M.L., Gatto A. (2025) ", 
-               "A nonparametric conditional copula-based imputation method. ",
+               "A nonparametric copula-based imputation method. ",
                "Under review.") )
                 

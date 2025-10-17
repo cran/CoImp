@@ -1,7 +1,7 @@
 Package: CoImp
 Title: Parametric and Nonparametric Copula-Based Imputation Methods
-Date: 2025-04-30
-Version: 2.1.0
+Date: 2025-10-27
+Version: 2.1.1
 Authors@R: c(person("Francesca Marta Lilja", "Di Lascio", role = c("aut","cre"), email = "marta.dilascio@unibz.it"),
 	     person("Aurora", "Gatto", role = c("aut"), email = "aurora.gatto@unibz.it"),
 	     person("Simone", "Giannerini", role = c("aut"), email = "simone.giannerini@unibo.it")
@@ -14,7 +14,7 @@ Imports: nnet, gtools, locfit
 Description: Copula-based imputation methods: parametric and nonparametric algorithms for missing multivariate data through conditional copulas.
 Maintainer: Francesca Marta Lilja Di Lascio <marta.dilascio@unibz.it>
 License: GPL (>= 2)
-Packaged: 2025-04-30 09:20:35 UTC; FDiLascio
+Packaged: 2025-10-15 06:27:00 UTC; FDiLascio
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2025-04-30 09:40:02 UTC
+Date/Publication: 2025-10-17 20:30:08 UTC

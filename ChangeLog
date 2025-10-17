@@ -1,4 +1,7 @@
-﻿2.1-0
+﻿2.1-1
+    - improved the terminology concerning the copula-based conditional probability function used to impute missing values
+    - implemented the possibility of adding other arguments in the NPCoImp function, e.g. weights for the Gower distance
+2.1-0
     - added two internal functions "EmpSCop" and "condEmpSCop"
     - improved the criterion to assess the radial symmetry and the asymmetry of the conditional empirical copula
     - corrected the calculation of alpha

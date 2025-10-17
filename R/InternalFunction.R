@@ -5,7 +5,7 @@
 #        vector of indices of conditioning variables, kind of empirical copula
 #
 ### NPCoImp
-### A NONPARAMETRIC COPULA BASED IMPUTATION METHOD
+### A NONPARAMETRIC COPULA-BASED IMPUTATION METHOD
 ##
 ##  The authors of this software are
 ##  F. Marta L. Di Lascio, and
@@ -30,7 +30,7 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-# Conditional empirical copula
+# Empirical copula-based conditional probability function
 condEmpCop <- function(u, X, j.cond, smoothing){
   # u evaluation points of the empirical copula
   # X complete sample data (if pobs(X) is given in input, nothing changes since C.n
@@ -88,7 +88,7 @@ EmpSCop <- function(u,X,smoothing="beta"){
   return(sc)
 }
 
-# Conditional empirical survival copula
+# Empirical survival-copula-based conditional probability function
 condEmpSCop <- function(u, X, j.cond, smoothing){
   # u evaluation points of the empirical copula
   # X complete sample data (if pobs(X) is given in input, nothing changes since C.n

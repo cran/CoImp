@@ -56,10 +56,10 @@ setMethod(
         cat (" Imputed data matrix : \n")
         print(out@"Imputed.matrix")
         cat (" -------------------------------------------------------------------------- \n")
-        cat (" Probability of the lower-orthant quantile selected for the imputation: \n")
+        cat (" Probability of the lower-orthant quantile selected for the imputation : \n")
         print(out@"Selected.alpha")
         cat (" -------------------------------------------------------------------------- \n")
-        cat ("Number of flat conditional empirical copulas : \n")
+        cat ("Number of flat empirical copula-based conditional probability functions : \n")
         print(out@"numFlat")
         cat (" -------------------------------------------------------------------------- \n")
     }
@@ -67,12 +67,12 @@ setMethod(
 
 ## ***************************************************************************************************
 
-NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), smoothing="beta", K=7, method="gower"){
+NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), smoothing="beta", K=7, method="gower", ...){
   if(is.matrix(X)==FALSE){stop("Please, provide a matrix data object in input")}
   if(length(Psi)<1){stop("Please, provide at least one value for Psi")}
   if(max(Psi)>=0.5){stop("The (a)symmetry is investigated around 0.5, thus Psi should be less than 0.5")} 
   if(min(Psi)<0){stop("The minimum value for Psi should be greater than 0")} 
-  if(length(Psi)==1 && Psi==0){cat("Median of the conditional empirical copula is used to impute data (Psi=0)","\n")}
+  if(length(Psi)==1 && Psi==0){cat("Median of the empirical copula-based conditional probability function is used to impute data (Psi=0)","\n")}
   if(K%%1!=0){
     K <- round(K, digits=0)
     cat("Note that K has been rounded since the provided value is not integer.","\n")
@@ -108,7 +108,7 @@ NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), smoothing="beta", K=7, method
       }
       cecASY <- c(cecL,cecU) 
       if(all(cecASY==0)){ 
-          print("It is not possible to assess the (a)symmetry since the empirical conditional copula is equal to zero in the considered values. Hence, it is not possible to impute.")
+          print("It is not possible to assess the (a)symmetry since the empirical copula-based conditional probability function is equal to zero in the considered values. Hence, it is not possible to impute.")
           h <- h+1
           X.imp[miss,]  <- x.miss[miss,] 
           q_fin <- u.imp <- NA
@@ -134,7 +134,7 @@ NPCoImp <- function(X, Psi=seq(0.05,0.45,by=0.05), smoothing="beta", K=7, method
         }
       u.na[j.na] <- u.imp      
       if(method=="gower"){
-          distances <- as.matrix(daisy(rbind(u.na, u.miss[-r.miss,]), metric=method))[-1, 1] 
+          distances <- as.matrix(daisy(rbind(u.na, u.miss[-r.miss,]), metric=method, ...))[-1, 1] 
       }else{
           if(method=="kendall"){
               distances <- as.matrix(as.dist(sqrt(1-cor(t(rbind(u.na, u.miss[-r.miss,])),method=method)^2)))[-1, 1] 
